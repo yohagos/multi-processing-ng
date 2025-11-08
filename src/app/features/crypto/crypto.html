@@ -1,0 +1,14 @@
+<h2>Overview of Prices changing</h2>
+
+<div class="dashboard">
+  @for (item of messages(); track $index) {
+  <button mat-raised-button class="split-button {{ getShadow(item.current_value, item.previous_value) }}">
+    <div class="top">
+      {{ item.initial }} <span class="space">-</span> {{ item.name }}
+    </div>
+    <div class="bottom">
+      {{ item.current_value }}
+    </div>
+  </button>
+  }
+</div>

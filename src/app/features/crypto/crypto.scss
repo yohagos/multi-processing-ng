@@ -1,0 +1,43 @@
+h2 {
+  margin: 2em;
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 2em;
+}
+
+.split-button {
+  width: 16em;
+  height: 4.5em;
+  padding: 15px 24px !important;
+  margin: 0.5em 0;
+  //line-height: 1.2 !important;
+
+  .top {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0.4em;
+  }
+
+  .space {
+    width: 1.1em;
+    font-weight: 900;
+  }
+
+  .bottom {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.shd-negative {
+  box-shadow: 0 4px 4px rgba($color: #de5050, $alpha: 0.6);
+}
+
+.shd-positive {
+  box-shadow: 0 4px 4px rgba($color: #50de45, $alpha: 0.6);
+}
