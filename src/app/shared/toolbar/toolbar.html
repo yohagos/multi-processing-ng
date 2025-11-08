@@ -1,0 +1,19 @@
+<mat-drawer-container class="drawer" autosize>
+  <mat-drawer #drawer class="drawer-nav" mode="side" opened>
+    <div class="navs">
+      <button matButton class="nav-btn" (click)="navigate('users')">Users</button>
+      <button matButton class="nav-btn" (click)="navigate('crypto')">Cryptos</button>
+    </div>
+  </mat-drawer>
+
+  <mat-toolbar class="toolbar">
+    <button matIconButton (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="overview" (click)="navigate('')">MP Playground</span>
+  </mat-toolbar>
+
+  <div class="barriere">
+    <router-outlet></router-outlet>
+  </div>
+</mat-drawer-container>
