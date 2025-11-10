@@ -1,14 +1,15 @@
 import {
-  AfterContentChecked,
   AfterViewInit,
   Component,
+  effect,
   inject,
+  OnInit,
   signal,
   ViewChild,
 } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { UserUiData } from './user.model';
-import { UserService } from './user-service';
+import { UserService } from './services/user-service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -33,47 +34,61 @@ import { UserEdit } from './user-edit/user-edit';
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
-export class Users implements AfterContentChecked, AfterViewInit {
+export class Users implements OnInit, AfterViewInit {
   private userService = inject(UserService);
+
   page = 1;
   limit = 10;
 
   displayedColumns: string[] = ['full_name', 'first_name', 'last_name', 'email', 'actions'];
-  dataSource!: MatTableDataSource<UserUiData>;
+  dataSource: MatTableDataSource<UserUiData> = new MatTableDataSource<UserUiData>([]);
 
-  @ViewChild(MatPaginator) paginator: MatPaginator = new MatPaginator();
+  @ViewChild(MatPaginator) paginator!: MatPaginator
 
   loading = this.userService.isListLoading();
 
-  selectedUser = this.userService.selectedUser
-  editMode = signal(false)
+  selectedUser = this.userService.selectedUser;
+  editMode = signal(false);
 
   constructor() {
-    this.userService.getUsers(this.page, this.limit);
+    effect(() => {
+      const pageData = this.userService.userPage()
+      this.dataSource.data = pageData.data
+      if (this.paginator) {
+        this.paginator.length = pageData.total
+        this.paginator.pageIndex = this.page -1
+      }
+    })
+  }
+
+  ngOnInit(): void {
+    this.loadUsers()
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    this.paginator.page.subscribe((ev) => {
+      this.page = ev.pageIndex + 1;
+      this.limit = ev.pageSize;
+      this.loadUsers()
+    });
   }
 
-  ngAfterContentChecked(): void {
-    this.dataSource = new MatTableDataSource<UserUiData>(this.userService.userPage().data);
+  private loadUsers() {
+    this.userService.getUsers(this.page, this.limit)
   }
 
   showDetailsForUser(user: UserUiData) {
-    console.log("Selected User => ", user)
-    this.userService.selectedUser.set(user)
+    this.userService.selectedUser.set(user);
   }
 
   editUser(user: UserUiData) {
-    console.log("Editing User => ", user)
-    this.editMode.set(true)
-    this.userService.selectedUser.set(user)
+    this.editMode.set(true);
+    this.userService.selectedUser.set(user);
   }
 
   deleteUser(user: UserUiData) {
     this.userService.deleteUserById(user.id).subscribe({
-      next: () => this.userService.getUsers(this.page, this.limit)
-    })
+      next: () => this.userService.getUsers(this.page, this.limit),
+    });
   }
 }
