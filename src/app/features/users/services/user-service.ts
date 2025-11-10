@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { UserModel, UserPage, UserUiData } from './user.model';
+import { UserModel, UserPage, UserUiData } from '../user.model';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { UserAdapter } from './user-adapter';
 
