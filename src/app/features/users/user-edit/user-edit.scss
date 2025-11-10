@@ -1,0 +1,23 @@
+.edit-card {
+  width: 32em;
+  margin: auto;
+
+  mat-card-actions {
+    margin: 0.8em 2em;
+    justify-content: end;
+  }
+}
+
+.form-fields {
+  margin: 2em auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  mat-form-field {
+    max-width: 70%;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+  }
+}
