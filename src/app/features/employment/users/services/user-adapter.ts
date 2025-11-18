@@ -1,38 +1,90 @@
-import { Injectable } from '@angular/core';
-import { UserApiData, UserUiData } from '../user.model';
+import { inject, Injectable } from '@angular/core';
+import { UserApiData, UserApiDataWithDetails, UserUiData, UserUiDataWithDetails } from '../../models/user.model';
+import { DepartmentAdapter } from '../../departments/services/department-adapter';
+import { PositionAdapter } from '../../positions/services/position-adapter';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserAdapter {
-  toUi(apiData: UserApiData): UserUiData {
+  private _departmentAdapter = inject(DepartmentAdapter)
+  private _positionAdapter = inject(PositionAdapter)
+
+  toUi(data: UserApiData): UserUiData {
     return {
-      id: apiData.id,
-      email: apiData.email,
-      first_name: apiData.first_name,
-      last_name: apiData.last_name,
-      full_name: `${apiData.first_name} ${apiData.last_name}`,
-      created_at: apiData.created_at,
-      updated_at: apiData.updated_at,
-    }
+      id: data.id,
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      full_name: `${data.first_name} ${data.last_name}`,
+      department_id: data.department_id,
+      position_id: data.position_id,
+      hire_date: data.hire_date,
+      phone: data.phone,
+      date_of_birth: data.date_of_birth,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+    };
   }
 
-  toApi(uiData: UserUiData): UserApiData {
+  toApi(data: UserUiData): UserApiData {
     return {
-      id: uiData.id,
-      email: uiData.email,
-      first_name: uiData.first_name,
-      last_name: uiData.last_name,
-      created_at: uiData.created_at,
-      updated_at: uiData.updated_at,
-    }
+      id: data.id,
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      department_id: data.department_id,
+      position_id: data.position_id,
+      hire_date: data.hire_date,
+      phone: data.phone,
+      date_of_birth: data.date_of_birth,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+    };
   }
 
   toUserUiList(apiList: UserApiData[]): UserUiData[] {
-    return apiList.map(data => this.toUi(data))
+    return apiList.map((data) => this.toUi(data));
   }
 
   toUserApiList(uiList: UserUiData[]): UserApiData[] {
-    return uiList.map(data => this.toApi(data))
+    return uiList.map((data) => this.toApi(data));
+  }
+
+  toUiDataWithDetails(data: UserApiDataWithDetails): UserUiDataWithDetails {
+    return {
+      id: data.id,
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      full_name: `${data.first_name} ${data.last_name}`,
+      department_id: data.department_id,
+      position_id: data.position_id,
+      hire_date: data.hire_date,
+      phone: data.phone,
+      date_of_birth: data.date_of_birth,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+      department: this._departmentAdapter.toUi(data.department),
+      position: this._positionAdapter.toUi(data.position),
+    }
+  }
+
+  toApiDataWithDetails(data: UserUiDataWithDetails): UserApiDataWithDetails {
+    return {
+      id: data.id,
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      department_id: data.department_id,
+      position_id: data.position_id,
+      hire_date: data.hire_date,
+      phone: data.phone,
+      date_of_birth: data.date_of_birth,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+      department: this._departmentAdapter.toApi(data.department),
+      position: this._positionAdapter.toApi(data.position),
+    }
   }
 }

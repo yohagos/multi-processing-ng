@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { UserModel, UserPage, UserUiData } from '../user.model';
+import { UserModel, UserPage, UserUiData } from '../../models/user.model';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { UserAdapter } from './user-adapter';
 
@@ -10,7 +10,7 @@ import { UserAdapter } from './user-adapter';
 export class UserService {
   private userAdapterService = inject(UserAdapter);
   private http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/user';
+  private baseUrl = 'http://localhost:8080/api/user';
 
   public userPage: WritableSignal<UserPage> = signal({
     data: [],
@@ -24,10 +24,14 @@ export class UserService {
   public isDetailLoading: WritableSignal<boolean> = signal(false);
   public error: WritableSignal<any | null> = signal(null);
 
-  public getUsers(page: number, limit: number) {
+  public getUsers(withDetails: boolean, page: number, limit: number) {
     this.isListLoading.set(true);
     this.error.set(null);
     const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+
+    if (withDetails) {
+      this.baseUrl += '/extended'
+    }
 
     this.http.get(this.baseUrl, { params, observe: 'response' }).subscribe({
       next: (response) => {
