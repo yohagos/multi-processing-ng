@@ -1,0 +1,11 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
