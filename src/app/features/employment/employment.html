@@ -1,5 +1,5 @@
 <mat-toolbar class="emp-toolbar">
-  @if (!onOverview) {
+  @if (!isOverview()) {
     <button matIconButton class="back-arrow" (click)="navigateTo('employment/overview')">
       <mat-icon>
         arrow_back

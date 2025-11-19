@@ -1,8 +1,9 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-employment',
@@ -16,23 +17,20 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
   templateUrl: './employment.html',
   styleUrl: './employment.scss',
 })
-export class Employment {
+export class Employment implements OnInit {
   private readonly _router = inject(Router)
-  private route = inject(ActivatedRoute)
 
-  onOverview = signal(false)
+  isOverview = signal(true)
 
-  constructor() {
-    
-    effect(() => {
-
+  ngOnInit(): void {
+    this._router.events.pipe(
+      filter(ev => ev instanceof NavigationEnd)
+    ).subscribe((ev: NavigationEnd) => {
+      this.isOverview.set(
+        ev.url === '/employment/overview'
+      )
     })
   }
-
-  /* ngOnInit(): void {
-    const stillOnOverview = this.route.snapshot.url.some(segment => segment.path !== 'overview')
-    this.onOverview.set(stillOnOverview)
-  } */
 
   navigateTo(route: string) {
     this._router.navigate([route])
