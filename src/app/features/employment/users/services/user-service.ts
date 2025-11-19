@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { UserModel, UserPage, UserUiData } from '../../models/user.model';
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { UserApiDataWithDetails, UserPage, UserUiDataWithDetails } from '../../models/user.model';
+import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { UserAdapter } from './user-adapter';
 
 @Injectable({
@@ -18,25 +18,22 @@ export class UserService {
     error: null,
   });
 
-  public selectedUser: WritableSignal<UserUiData | undefined> = signal(undefined);
+  public selectedUser: WritableSignal<UserUiDataWithDetails | undefined> = signal(undefined);
 
   public isListLoading: WritableSignal<boolean> = signal(false);
   public isDetailLoading: WritableSignal<boolean> = signal(false);
   public error: WritableSignal<any | null> = signal(null);
 
-  public getUsers(withDetails: boolean, page: number, limit: number) {
+  public getUsers(page: number, limit: number) {
     this.isListLoading.set(true);
     this.error.set(null);
     const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
 
-    if (withDetails) {
-      this.baseUrl += '/extended'
-    }
-
     this.http.get(this.baseUrl, { params, observe: 'response' }).subscribe({
       next: (response) => {
+        // console.log("Load users response => ", (response.body as UserPage).data)
         this.userPage.set({
-          data: (response.body as UserPage).data.map((item) => this.userAdapterService.toUi(item)),
+          data: (response.body as UserPage).data,
           total: (response.body as UserPage).total,
           error: (response.body as UserPage).error,
         });
@@ -56,7 +53,7 @@ export class UserService {
     this.error.set(null);
 
     this.http
-      .get<UserModel>(`${this.baseUrl}/${id}`)
+      .get<UserUiDataWithDetails>(`${this.baseUrl}/${id}`)
       .pipe(
         catchError((err) => {
           this.error.set(err);
@@ -68,20 +65,20 @@ export class UserService {
       .subscribe((item) => {
         console.log('Detail user received => ', item);
         if (item) {
-          this.selectedUser.set(this.userAdapterService.toUi(item));
+          this.selectedUser.set(this.userAdapterService.toUiDataWithDetails(item));
         }
         this.isDetailLoading.set(false);
       });
   }
 
-  public createUser(newUser: Partial<UserModel>): Observable<UserModel> {
+  public createUser(newUser: Partial<UserUiDataWithDetails>): Observable<UserApiDataWithDetails> {
     this.error.set(null);
-    return this.http.post<UserModel>(this.baseUrl, newUser).pipe(
+    return this.http.post<UserApiDataWithDetails>(this.baseUrl, newUser).pipe(
       tap((createdUser) => {
-        this.userPage.update((page) => ({
+        /* this.userPage.update((page) => ({
           ...page,
-          data: [this.userAdapterService.toUi(createdUser), ...page.data].slice(0, 9),
-        }));
+          data: [this.userAdapterService.toUiDataWithDetails(createdUser), ...page.data].slice(0, 9),
+        })); */
       }),
       catchError((err) => {
         this.error.set(err);
@@ -90,13 +87,13 @@ export class UserService {
     );
   }
 
-  public updateUser(id: string, update: Partial<UserModel>): Observable<UserModel> {
+  /* public updateUser(id: string, update: Partial<UserModel>): Observable<UserUiDataWithDetails> {
     this.error.set(null);
 
     return this.http.patch<UserModel>(`${this.baseUrl}/${id}`, update).pipe(
       tap((updatedUser) => {
         if (this.selectedUser()?.id === id) {
-          this.selectedUser.set(this.userAdapterService.toUi(updatedUser));
+          this.selectedUser.set(this.userAdapterService.toUiDataWithDetails(updatedUser));
         }
 
         this.userPage.update((page) => ({
@@ -111,7 +108,7 @@ export class UserService {
         return throwError(() => err);
       })
     );
-  }
+  } */
 
   public deleteUserById(id: string): Observable<void> {
     this.error.set(null);

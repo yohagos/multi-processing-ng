@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { UserApiData, UserApiDataWithDetails, UserUiData, UserUiDataWithDetails } from '../../models/user.model';
+import { UserApiDataWithDetails, UserUiDataWithDetails } from '../../models/user.model';
 import { DepartmentAdapter } from '../../departments/services/department-adapter';
 import { PositionAdapter } from '../../positions/services/position-adapter';
+import { AddressAdapter } from '../../address/services/address-adapter';
+import { SkillAdapter } from '../../skill/services/skill-adapter';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +11,10 @@ import { PositionAdapter } from '../../positions/services/position-adapter';
 export class UserAdapter {
   private _departmentAdapter = inject(DepartmentAdapter)
   private _positionAdapter = inject(PositionAdapter)
+  private _addressAdapter = inject(AddressAdapter)
+  private _skillAdapter = inject(SkillAdapter)
 
-  toUi(data: UserApiData): UserUiData {
+  /* toUi(data: UserApiData): UserUiData {
     return {
       id: data.id,
       email: data.email,
@@ -49,7 +53,7 @@ export class UserAdapter {
 
   toUserApiList(uiList: UserUiData[]): UserApiData[] {
     return uiList.map((data) => this.toApi(data));
-  }
+  } */
 
   toUiDataWithDetails(data: UserApiDataWithDetails): UserUiDataWithDetails {
     return {
@@ -67,6 +71,8 @@ export class UserAdapter {
       updated_at: data.updated_at,
       department: this._departmentAdapter.toUi(data.department),
       position: this._positionAdapter.toUi(data.position),
+      address: this._addressAdapter.toUi(data.address),
+      skill: this._skillAdapter.toUiList(data.skill)
     }
   }
 
@@ -85,6 +91,12 @@ export class UserAdapter {
       updated_at: data.updated_at,
       department: this._departmentAdapter.toApi(data.department),
       position: this._positionAdapter.toApi(data.position),
+      address: this._addressAdapter.toApi(data.address),
+      skill: this._skillAdapter.toApiList(data.skill)
     }
+  }
+
+  toUiListWithDetails(data: UserApiDataWithDetails[]): UserUiDataWithDetails[] {
+    return data.map((u) => this.toUiDataWithDetails(u))
   }
 }

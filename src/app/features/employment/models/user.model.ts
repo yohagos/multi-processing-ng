@@ -1,8 +1,10 @@
 import { HttpErrorResponse } from "@angular/common/http"
-import { DepartmentApiData, DepartmentModel, DepartmentUiData } from "./department.model"
+import { DepartmentApiData, DepartmentUiData } from "./department.model"
 import { PositionApiData, PositionUiData } from "./position.model"
+import { SkillApiData, SkillUiData } from "./skill.model"
+import { AddressApiData, AddressUiData } from "./address.model"
 
-export interface UserModel {
+/* export interface UserModel {
   id: string
   first_name: string
   last_name: string
@@ -25,15 +27,15 @@ export interface UserUpdateModel {
   hire_date: Date
   phone: string
   date_of_birth: string
-}
+} */
 
 export interface UserPage {
-  data: UserUiData[] | UserUiDataWithDetails[]
+  data: UserUiDataWithDetails[]
   total: number
   error: HttpErrorResponse | null
 }
 
-export interface UserApiData {
+/* export interface UserApiData {
   id: string
   first_name: string
   last_name: string
@@ -60,7 +62,7 @@ export interface UserUiData {
   date_of_birth: string
   created_at: Date
   updated_at: Date
-}
+} */
 
 export interface UserApiDataWithDetails {
   id: string
@@ -76,6 +78,8 @@ export interface UserApiDataWithDetails {
   updated_at: Date
   department: DepartmentApiData
   position: PositionApiData
+  address?: AddressApiData
+  skill: SkillApiData[]
 }
 
 export interface UserUiDataWithDetails {
@@ -93,4 +97,6 @@ export interface UserUiDataWithDetails {
   updated_at: Date
   department: DepartmentUiData
   position: PositionUiData
+  skill: SkillUiData[]
+  address?: AddressUiData
 }

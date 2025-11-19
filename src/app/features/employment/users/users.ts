@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { UserUiData } from '../models/user.model';
+import { UserUiDataWithDetails } from '../models/user.model';
 import { UserService } from './services/user-service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UserDetail } from './user-detail/user-detail';
 import { UserEdit } from './user-edit/user-edit';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -37,13 +36,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class Users implements OnInit, AfterViewInit {
   private userService = inject(UserService);
-  private route = inject(ActivatedRoute)
 
   page = 1;
   limit = 10;
 
   displayedColumns: string[] = ['full_name', 'first_name', 'last_name', 'email', 'actions'];
-  dataSource: MatTableDataSource<UserUiData> = new MatTableDataSource<UserUiData>([]);
+  dataSource: MatTableDataSource<UserUiDataWithDetails> = new MatTableDataSource<UserUiDataWithDetails>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
 
@@ -52,11 +50,7 @@ export class Users implements OnInit, AfterViewInit {
   selectedUser = this.userService.selectedUser;
   editMode = signal(false);
 
-  withDetails = signal(false)
-
   constructor() {
-    const withDetails = this.route.snapshot.url.some(segment => segment.path === 'with-details')
-    this.withDetails.set(withDetails)
     effect(() => {
       const pageData = this.userService.userPage()
       this.dataSource.data = pageData.data
@@ -80,21 +74,22 @@ export class Users implements OnInit, AfterViewInit {
   }
 
   private loadUsers() {
-    this.userService.getUsers(this.withDetails(), this.page, this.limit)
+    this.userService.getUsers(this.page, this.limit)
   }
 
-  showDetailsForUser(user: UserUiData) {
+  showDetailsForUser(user: UserUiDataWithDetails) {
+    console.log("ShowDetailsForUser => ", user)
     this.userService.selectedUser.set(user);
   }
 
-  editUser(user: UserUiData) {
+  editUser(user: UserUiDataWithDetails) {
     this.editMode.set(true);
     this.userService.selectedUser.set(user);
   }
 
-  deleteUser(user: UserUiData) {
+  deleteUser(user: UserUiDataWithDetails) {
     this.userService.deleteUserById(user.id).subscribe({
-      next: () => this.userService.getUsers(this.withDetails(), this.page, this.limit),
+      next: () => this.userService.getUsers(this.page, this.limit),
     });
   }
 }
