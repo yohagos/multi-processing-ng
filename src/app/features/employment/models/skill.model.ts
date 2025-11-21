@@ -6,6 +6,16 @@ export interface SkillUiData {
   updated_at: Date
 }
 
+export interface SkillWithDetailsUiData {
+  id: string
+  name: string
+  category: string
+  created_at: Date
+  updated_at: Date
+  proficiency_level: number
+  axquired_date: Date
+}
+
 export interface SkillApiData {
   id: string
   name: string
