@@ -1,9 +1,9 @@
-@if (selectedUser() !== undefined && !editMode()) {
+<!-- @if (selectedUser() !== undefined && !editMode()) {
   <app-user-detail></app-user-detail>
 }
 @if (selectedUser() !== undefined && editMode()) {
   <app-user-edit></app-user-edit>
-}
+} -->
 <div class="mat-elevation-z8 user-table">
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="full_name">

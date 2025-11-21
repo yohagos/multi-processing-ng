@@ -16,16 +16,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UserDetail } from './user-detail/user-detail';
-import { UserEdit } from './user-edit/user-edit';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-users',
   imports: [
     CommonModule,
-    UserDetail,
-    UserEdit,
 
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
@@ -36,6 +35,7 @@ import { UserEdit } from './user-edit/user-edit';
 })
 export class Users implements OnInit, AfterViewInit {
   private userService = inject(UserService);
+  private dialog = inject(MatDialog)
 
   page = 1;
   limit = 10;
@@ -78,8 +78,12 @@ export class Users implements OnInit, AfterViewInit {
   }
 
   showDetailsForUser(user: UserUiDataWithDetails) {
-    console.log("ShowDetailsForUser => ", user)
     this.userService.selectedUser.set(user);
+    const dialogRef = this.dialog.open(UserDetail, {
+      minHeight: "30em",
+    })
+
+    dialogRef.afterClosed().subscribe(result => console.log("Dialog closed | Result => ", result))
   }
 
   editUser(user: UserUiDataWithDetails) {
