@@ -1,3 +1,11 @@
+export interface SkillApiData {
+  id: string
+  name: string
+  category: string
+  created_at: Date
+  updated_at: Date
+}
+
 export interface SkillUiData {
   id: string
   name: string
@@ -13,13 +21,15 @@ export interface SkillWithDetailsUiData {
   created_at: Date
   updated_at: Date
   proficiency_level: number
-  axquired_date: Date
+  acquired_date: Date
 }
 
-export interface SkillApiData {
+export interface SkillWithDetailsApiData {
   id: string
   name: string
   category: string
   created_at: Date
   updated_at: Date
+  proficiency_level: number
+  acquired_date: Date
 }
