@@ -1,10 +1,14 @@
-import { Component, effect, inject, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, effect, inject, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserService } from '../services/user-service';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { SkillService } from '../../skill/services/skill-service';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-user-edit',
@@ -13,14 +17,19 @@ import { MatInputModule } from '@angular/material/input';
 
     MatButtonModule,
     MatCardModule,
+    MatDialogModule,
+    MatTabsModule,
     MatFormFieldModule,
     MatInputModule,
+
+    DatePipe,
   ],
   templateUrl: './user-edit.html',
   styleUrl: './user-edit.scss',
 })
-export class UserEdit {
+export class UserEdit implements OnInit, AfterViewInit {
   private userService = inject(UserService)
+  private skillService = inject(SkillService)
 
   selectedUser = this.userService.selectedUser
 
@@ -52,6 +61,14 @@ export class UserEdit {
     })
   }
 
+  ngOnInit(): void {
+
+  }
+
+  ngAfterViewInit(): void {
+
+  }
+
   hasChanges() {
     return this.selectedUser()?.first_name !== this.form().get("first_name")?.value ||
             this.selectedUser()?.last_name !== this.form().get("last_name")?.value
@@ -59,7 +76,7 @@ export class UserEdit {
 
   onSubmit() {
     if (this.selectedUser() && this.selectedUser()!.id) {
-      this.userService.updateUser(
+      /* this.userService.updateUser(
         this.selectedUser()!.id,
         {
           first_name: this.form().get('first_name')!.value || undefined,
@@ -68,7 +85,7 @@ export class UserEdit {
         }
       ).subscribe({
 
-      })
+      }) */
     }
   }
 

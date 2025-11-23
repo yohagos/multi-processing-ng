@@ -1,4 +1,4 @@
-<mat-card class="edit-card">
+<!-- <mat-card class="edit-card">
   <mat-card-header>
     <mat-card-title-group>
       <mat-card-title>
@@ -33,4 +33,22 @@
       Cancel
     </button>
   </mat-card-actions>
-</mat-card>
+</mat-card> -->
+
+<h2 mat-dialog-title>Edit {{selectedUser()?.first_name}} {{selectedUser()?.last_name}} </h2>
+<mat-dialog-content animationDuration="1100ms">
+  <mat-tab-group>
+    <mat-tab label="Personal Informations">
+      Personal informations {{selectedUser()?.created_at | date }}
+    </mat-tab>
+    <mat-tab label="Department & Position">
+      Departments
+    </mat-tab>
+    <mat-tab label="Skills">
+      Skills
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

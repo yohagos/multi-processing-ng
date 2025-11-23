@@ -3,6 +3,7 @@ import {
   Component,
   effect,
   inject,
+  OnDestroy,
   OnInit,
   signal,
   ViewChild,
@@ -17,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UserDetail } from './user-detail/user-detail';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { UserEdit } from './user-edit/user-edit';
 
 @Component({
   selector: 'app-users',
@@ -33,7 +35,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
   templateUrl: './users.html',
   styleUrl: './users.scss',
 })
-export class Users implements OnInit, AfterViewInit {
+export class Users implements OnInit, AfterViewInit, OnDestroy {
   private userService = inject(UserService);
   private dialog = inject(MatDialog)
 
@@ -53,7 +55,6 @@ export class Users implements OnInit, AfterViewInit {
   constructor() {
     effect(() => {
       const pageData = this.userService.userPage()
-      console.log("Data received => ", pageData.data)
       this.dataSource.data = pageData.data
       if (this.paginator) {
         this.paginator.length = pageData.total
@@ -83,19 +84,23 @@ export class Users implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(UserDetail, {
       minHeight: "30em",
     })
-
-    dialogRef.afterClosed().subscribe(result => console.log("Dialog closed | Result => ", result))
   }
 
   editUser(user: UserUiDataWithDetails) {
-    this.editMode.set(true);
     this.userService.selectedUser.set(user);
+    const dialogRef = this.dialog.open(UserEdit, {
+      minHeight: "30em",
+    })
   }
 
   deleteUser(user: UserUiDataWithDetails) {
     this.userService.deleteUserById(user.id).subscribe({
       next: () => this.userService.getUsers(this.page, this.limit),
     });
+  }
+
+  ngOnDestroy(): void {
+
   }
 
 }
