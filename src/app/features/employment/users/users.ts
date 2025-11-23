@@ -40,7 +40,7 @@ export class Users implements OnInit, AfterViewInit {
   page = 1;
   limit = 10;
 
-  displayedColumns: string[] = ['full_name', 'first_name', 'last_name', 'email', 'actions'];
+  displayedColumns: string[] = ['full_name', 'email', 'department', "skills", 'actions'];
   dataSource: MatTableDataSource<UserUiDataWithDetails> = new MatTableDataSource<UserUiDataWithDetails>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
@@ -53,6 +53,7 @@ export class Users implements OnInit, AfterViewInit {
   constructor() {
     effect(() => {
       const pageData = this.userService.userPage()
+      console.log("Data received => ", pageData.data)
       this.dataSource.data = pageData.data
       if (this.paginator) {
         this.paginator.length = pageData.total
@@ -96,4 +97,5 @@ export class Users implements OnInit, AfterViewInit {
       next: () => this.userService.getUsers(this.page, this.limit),
     });
   }
+
 }
