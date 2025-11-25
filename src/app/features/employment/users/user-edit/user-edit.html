@@ -1,54 +1,88 @@
-<!-- <mat-card class="edit-card">
-  <mat-card-header>
-    <mat-card-title-group>
-      <mat-card-title>
-        Edit User
-      </mat-card-title>
-    </mat-card-title-group>
-  </mat-card-header>
-  <mat-card-content>
-    <div [formGroup]="form()" class="form-fields">
-      <mat-form-field appearance="outline">
-      <mat-label>First name</mat-label>
-      <input matInput formControlName="first_name">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Last name</mat-label>
-      <input matInput formControlName="last_name">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email">
-    </mat-form-field>
-    </div>
-  </mat-card-content>
-  <mat-card-actions>
-    <button class="edit-btn"
-            mat-raised-button
-            [disabled]="!hasChanges()"
-            (click)="onSubmit()">
-      Edit
-    </button>
-    <button class="cancel-btn" mat-flat-button (click)="onCancel()">
-      Cancel
-    </button>
-  </mat-card-actions>
-</mat-card> -->
-
-<h2 mat-dialog-title>Edit {{selectedUser()?.first_name}} {{selectedUser()?.last_name}} </h2>
+<h2 mat-dialog-title>Edit Profile for {{ selectedUser()?.first_name }} {{ selectedUser()?.last_name }}</h2>
 <mat-dialog-content animationDuration="1100ms">
-  <mat-tab-group>
-    <mat-tab label="Personal Informations">
-      Personal informations {{selectedUser()?.created_at | date }}
-    </mat-tab>
-    <mat-tab label="Department & Position">
-      Departments
-    </mat-tab>
-    <mat-tab label="Skills">
-      Skills
-    </mat-tab>
-  </mat-tab-group>
+  <form [formGroup]="userWithDetailsForm()">
+    <mat-tab-group>
+        <mat-tab label="Personal Informations">
+          <mat-form-field>
+            <mat-label>First Name</mat-label>
+            <input matInput type="text" formControlName="first_name" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Last Name</mat-label>
+            <input matInput type="text" formControlName="last_name" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" formControlName="email" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Phone</mat-label>
+            <input matInput type="text" formControlName="phone" />
+          </mat-form-field>
+        </mat-tab>
+        <mat-tab label="Address Informations">
+          <ng-container formGroupName="address">
+            <mat-form-field>
+              <mat-label>Street</mat-label>
+              <input matInput type="text" formControlName="street" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>City</mat-label>
+              <input matInput type="text" formControlName="city" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Zip Code</mat-label>
+              <input matInput type="text" formControlName="zip_code"/>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Country</mat-label>
+              <input matInput type="text" formControlName="country" />
+            </mat-form-field>
+          </ng-container>
+        </mat-tab>
+        <mat-tab label="Department & Position">
+          <mat-form-field>
+              <mat-label>Department</mat-label>
+              <mat-select formControlName="department_id">
+                @for (item of listOfDepartments().data; track $index) {
+                  <mat-option [value]="item.id"> {{ item.name }} </mat-option>
+                }
+              </mat-select>
+          </mat-form-field>
+          <ng-container formGroupName="department">
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input matInput type="text" formControlName="name" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Description</mat-label>
+              <input matInput type="text" formControlName="description" />
+            </mat-form-field>
+          </ng-container>
+          <hr />
+          <mat-form-field>
+            <mat-label>Position</mat-label>
+            <mat-select formControlName="position_id">
+              @for (item of listOfPositions().data; track $index) {
+                <mat-option [value]="item.id"> {{ item.title }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <ng-container formGroupName="position">
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input matInput type="text" formControlName="title" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Level</mat-label>
+              <input matInput type="text" formControlName="level" />
+            </mat-form-field>
+          </ng-container>
+        </mat-tab>
+      <mat-tab label="Skills"> Skills </mat-tab>
+    </mat-tab-group>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button matButton mat-dialog-close>Cancel</button>
+  <button matButton class="cancel-btn" (click)="onCancel()" mat-dialog-close>Cancel</button>
 </mat-dialog-actions>

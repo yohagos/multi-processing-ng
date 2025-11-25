@@ -21,3 +21,13 @@
     margin: auto;
   }
 }
+
+form {
+  mat-form-field {
+    width: 70%;
+    margin: 0.65em auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
