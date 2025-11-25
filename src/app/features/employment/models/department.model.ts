@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from "@angular/common/http"
+
 export interface DepartmentModel {
   id: string
   name: string
@@ -25,4 +27,10 @@ export interface DepartmentUiData {
   description: string
   created_at: string
   updated_at: string
+}
+
+export interface DepartmentPage {
+  data: DepartmentUiData[]
+  total: number
+  error: HttpErrorResponse | null
 }
