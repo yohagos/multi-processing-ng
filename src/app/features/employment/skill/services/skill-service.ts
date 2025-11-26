@@ -3,7 +3,7 @@ import { SkillAdapter } from './skill-adapter';
 import { HttpClient } from '@angular/common/http';
 
 import { catchError, of } from 'rxjs';
-import { SkillWithDetailsApiData, SkillWithDetailsUiData } from '../../models/skill.model';
+import { SkillPage, SkillWithDetailsApiData, SkillWithDetailsUiData } from '../../models/skill.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,11 @@ export class SkillService {
   private baseUrl = "http://localhost:8080/api/skill"
 
   public skillsByUserId: WritableSignal<SkillWithDetailsUiData[] | null> = signal(null)
+  skillList: WritableSignal<SkillPage> = signal({
+    data: [],
+    total: 0,
+    error: null
+  })
 
   getSkillsByUserId(id: string) {
     this.httpClient.get<SkillWithDetailsApiData[]>(`${this.baseUrl}/user/${id}`).pipe(
@@ -26,4 +31,19 @@ export class SkillService {
       }
     })
   }
+
+  loadSkills() {
+    this.httpClient.get(this.baseUrl).pipe(
+      catchError((err) => {
+        return of(err)
+      })
+    ).subscribe({
+      next: (result) => this.skillList.set({
+        data: result.data,
+        total: result.total,
+        error: result.error
+      })
+    })
+  }
+
 }

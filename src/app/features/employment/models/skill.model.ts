@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from "@angular/common/http"
+
 export interface SkillApiData {
   id: string
   name: string
@@ -32,4 +34,10 @@ export interface SkillWithDetailsApiData {
   updated_at: Date
   proficiency_level: number
   acquired_date: Date
+}
+
+export interface SkillPage {
+  data: SkillUiData[]
+  total: number
+  error: HttpErrorResponse | null
 }
