@@ -19,10 +19,6 @@ export const routes: Routes = [
         component: Users,
       },
       {
-        path: 'users/with-details',
-        component: Users,
-      },
-      {
         path: 'departments',
         component: Departments,
       },
