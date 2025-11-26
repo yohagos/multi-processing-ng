@@ -1,14 +1,17 @@
 import {
-  AfterViewInit,
   Component,
-  effect,
   inject,
-  OnChanges,
+  OnDestroy,
   OnInit,
   signal,
-  SimpleChanges,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserService } from '../services/user-service';
@@ -17,12 +20,16 @@ import { MatInputModule } from '@angular/material/input';
 import { SkillService } from '../../skill/services/skill-service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
-import { DatePipe } from '@angular/common';
-import { SkillUiData, SkillWithDetailsUiData } from '../../models/skill.model';
+import { SkillUiData } from '../../models/skill.model';
 import { DepartmentService } from '../../departments/services/department-service';
 import { PositionService } from '../../positions/services/position-service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
+import { Subject, takeUntil } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { PositionUiData } from '../../models/position.model';
+import { DepartmentUiData } from '../../models/department.model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-user-edit',
@@ -32,6 +39,7 @@ import { MatRadioModule } from '@angular/material/radio';
     MatButtonModule,
     MatCardModule,
     MatDialogModule,
+    MatIconModule,
     MatTabsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -41,142 +49,173 @@ import { MatRadioModule } from '@angular/material/radio';
   templateUrl: './user-edit.html',
   styleUrl: './user-edit.scss',
 })
-export class UserEdit {
+export class UserEdit implements OnInit, OnDestroy {
   private userService = inject(UserService);
   private skillService = inject(SkillService);
-  private departmentService = inject(DepartmentService)
-  private positionService = inject(PositionService)
-  private fb = inject(FormBuilder)
+  private departmentService = inject(DepartmentService);
+  private positionService = inject(PositionService);
+  private fb = inject(FormBuilder);
 
   selectedUser = this.userService.selectedUser;
-  skillsByUserId = this.skillService.skillsByUserId
-  listOfDepartments = this.departmentService.departmentList
-  listOfPositions = this.positionService.positionsList
+  skillsByUserId = this.skillService.skillsByUserId;
+  listOfDepartments = this.departmentService.departmentList;
+  listOfPositions = this.positionService.positionsList;
+  listOfSkills = this.skillService.skillList
 
-  userWithDetailsForm = signal(
-    new FormGroup({
-      first_name: new FormControl('', [Validators.required]),
-      last_name: new FormControl('', [Validators.required]),
-      email: new FormControl({ value: '', disabled: true }, [
-        Validators.required,
-        Validators.email,
-      ]),
-      department_id: new FormControl('', [Validators.required]),
-      position_id: new FormControl('', [Validators.required]),
-      phone: new FormControl('', [Validators.required]),
-      department: new FormGroup({
-        name: new FormControl({value: '', disabled: true}),
-        description: new FormControl({value: '', disabled: true}),
-      }),
-      position: new FormGroup({
-        title: new FormControl({value: '', disabled: true}),
-        level: new FormControl({value: '', disabled: true}),
-      }),
-      address: new FormGroup({
-        street: new FormControl(''),
-        city: new FormControl(''),
-        zip_code: new FormControl(''),
-        country: new FormControl(''),
-      }),
-    })
-  );
+  userWithDetailsForm = this.fb.group({
+    first_name: ['', [Validators.required]],
+    last_name: ['', [Validators.required]],
+    email: [{value: '', disabled: true}, [Validators.required, Validators.email]],
+    department_id: ['', [Validators.required]],
+    position_id: ['', [Validators.required]],
+    phone: ['', [Validators.required]],
 
-  userSkillsForm = signal(
-     new FormArray<FormGroup<{
-      id: FormControl<string | null>;
-      name: FormControl<string | null>;
-      category: FormControl<string | null>;
-      proficiency_level: FormControl<number | null>;
-      acquired_date: FormControl<string | null>;
-    }>>([])
-  )
+    department: this.fb.group({
+      name: [{ value: '', disabled: true }],
+      description: [{ value: '', disabled: true }],
+    }),
+    position: this.fb.group({
+      title: [{ value: '', disabled: true }],
+      level: [{ value: '', disabled: true }],
+    }),
+    address: this.fb.group({
+      street: [''],
+      city: [''],
+      zip_code: [''],
+      country: [''],
+    }),
+    skill: this.fb.array<FormGroup>([]),
+  });
+
+  private destroy$ = new Subject<void>();
+
+  selectedPosition = signal<PositionUiData | undefined>(undefined);
+  selectedDepartment = signal<DepartmentUiData | undefined>(undefined);
+  selectedSkills = signal<SkillUiData[]>([])
+
+  userSkills = signal<SkillUiData[]>([])
+
+  private initialFormValue: any;
 
   constructor() {
-    this.positionService.loadPositionList()
-    this.departmentService.loadDepatments()
-    effect(() => {
-      const user = this.selectedUser();
-      console.log(user)
-      if (user) {
-        this.skillService.getSkillsByUserId(user?.id)
+    toObservable(this.userService.selectedUser)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user) => {
+        if (!user) return;
+        this.skillService.getSkillsByUserId(user?.id);
 
-        this.userWithDetailsForm().patchValue(
-          {
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            department_id: user.department_id,
-            position_id: user.position_id,
-            phone: user.phone,
-            address: {
-              street: user.address?.street,
-              city: user.address?.city,
-              zip_code: user.address?.zip_code,
-              country: user.address?.country,
-            },
-            position: {
-              title: user.position.title,
-              level: user.position.level.toString(),
-            },
-            department: {
-              name: user.department.name,
-              description: user.department.description,
-            },
+        this.userWithDetailsForm.patchValue({
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          department_id: user.department_id,
+          position_id: user.position_id,
+          phone: user.phone,
+
+          address: {
+            street: user.address?.street,
+            city: user.address?.city,
+            zip_code: user.address?.zip_code,
+            country: user.address?.country,
           },
-          { emitEvent: false }
-        );
-      }
-    });
+        });
 
-    /* this.form().valueChanges.subscribe((changes) => {
-      if (changes.first_name || changes.last_name) {
-        const newEmail = `${changes.first_name?.toLowerCase()}.${changes.last_name?.toLowerCase()}@test.de`;
-        this.form().get('email')?.setValue(newEmail, { emitEvent: false });
-      }
-    }); */
+        this.userWithDetailsForm.get('position')?.patchValue({
+          title: user.position.title,
+          level: user.position.level.toString(),
+        });
 
+        this.userWithDetailsForm.get('department')?.patchValue({
+          name: user.department.name,
+          description: user.department.description,
+        });
+
+        if (user.skill && user.skill.length > 0) {
+          this.loadSkills(user.skill);
+          this.userSkills.set(user.skill)
+        }
+
+        this.initialFormValue = JSON.parse(JSON.stringify(this.userWithDetailsForm.getRawValue()));
+
+        console.log(this.userWithDetailsForm.getRawValue());
+      });
   }
 
-  populateItems(data: SkillWithDetailsUiData[]) {
-    if (data.length > 0) {
-      const newFormArray = new FormArray(
-        data.map(sk => this.fb.group({
-          id: [sk.id],
-          name: [sk.name],
-          category: [sk.category],
-          proficiency_level: [sk.proficiency_level],
-          acquired_date: [sk.acquired_date.toString()]
-        }))
-      )
-      this.userSkillsForm.set(newFormArray)
+  ngOnInit(): void {
+    this.positionService.loadPositionList();
+    this.departmentService.loadDepatments();
+    this.skillService.loadSkills();
+  }
+
+  createSkillForm(skill: SkillUiData): FormGroup {
+    return this.fb.group({
+      id: { value: skill.id, disabled: true },
+      name: { value: skill.name, disabled: true },
+      category: { value: skill.category, disabled: true },
+    });
+  }
+
+  loadSkills(skills: SkillUiData[]) {
+    const skillsArray = this.userWithDetailsForm.get('skill') as FormArray;
+
+    while (skillsArray.length > 0) {
+      skillsArray.removeAt(0);
+    }
+
+    skills.forEach((sk) => {
+      skillsArray.push(this.createSkillForm(sk));
+    });
+  }
+
+  hasChanges(): boolean {
+    const currentValue = this.userWithDetailsForm.getRawValue()
+    return JSON.stringify(currentValue) !== JSON.stringify(this.initialFormValue);
+  }
+
+  onPositionChange(id: string) {
+    const pos = this.listOfPositions().data.find((d) => d.id === id);
+    this.selectedPosition.set(pos);
+
+    if (pos) {
+      this.userWithDetailsForm.get('position')?.patchValue({
+        title: pos.title,
+        level: pos.level.toString(),
+      });
     }
   }
 
-  /* hasChanges() {
-    return (
-      //this.selectedUser()?.first_name !== this.form().get('first_name')?.value ||
-      //this.selectedUser()?.last_name !== this.form().get('last_name')?.value
-    );
-  } */
+  onDepartmentChange(id: string) {
+    const dep = this.listOfDepartments().data.find((d) => d.id === id);
+    this.selectedDepartment.set(dep);
+
+    if (dep) {
+      this.userWithDetailsForm.get('department')?.patchValue({
+        name: dep.name,
+        description: dep.description,
+      });
+    }
+  }
+
+  onSkillChange(id: string) {
+    if (this.selectedSkills().find(s => s.id === id)) return
+
+    const skill = this.listOfSkills().data.find(sk => sk.id === id)
+    if (!skill) return
+    this.selectedSkills().push(skill)
+  }
 
   onSubmit() {
     if (this.selectedUser() && this.selectedUser()!.id) {
-      /* this.userService.updateUser(
-        this.selectedUser()!.id,
-        {
-          first_name: this.form().get('first_name')!.value || undefined,
-          last_name: this.form().get('last_name')!.value || undefined,
-          email: this.form().get('email')!.value || undefined,
-        }
-      ).subscribe({
-
-      }) */
     }
   }
 
   onCancel() {
-    this.userService.selectedUser.set(undefined)
-    this.skillService.skillsByUserId.set([])
-    //this.form().reset();
+    this.userService.selectedUser.set(undefined);
+    this.skillService.skillsByUserId.set([]);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

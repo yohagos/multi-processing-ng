@@ -31,3 +31,22 @@ form {
     justify-content: center;
   }
 }
+
+.skill-select {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 1em auto;
+  align-items: center;
+  width: 70%;
+  gap: 0.5em;
+
+  mat-form-field {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .add-btn, .mat-mdc-icon-button {
+    margin-bottom: 20px;
+  }
+}

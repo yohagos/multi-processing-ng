@@ -1,7 +1,33 @@
 <h2 mat-dialog-title>Edit Profile for {{ selectedUser()?.first_name }} {{ selectedUser()?.last_name }}</h2>
 <mat-dialog-content animationDuration="1100ms">
-  <form [formGroup]="userWithDetailsForm()">
+  <form [formGroup]="userWithDetailsForm">
     <mat-tab-group>
+      <mat-tab label="Skills">
+        <div class="skill-select">
+          <mat-form-field >
+            <mat-label>Select Skill</mat-label>
+            <mat-select (selectionChange)="onSkillChange($event.value)">
+              @for (item of listOfSkills().data; track $index) {
+                <mat-option [value]="item.id"> {{item.name}} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button matButton class="add-btn"> Add </button>
+        </div>
+
+          @for (item of userSkills(); track $index) {
+            <div class="skill-select">
+              <mat-form-field>
+                <input matInput [value]="item.name">
+              </mat-form-field>
+              <button matIconButton>
+                <mat-icon>
+                  remove
+                </mat-icon>
+              </button>
+            </div>
+          }
+      </mat-tab>
         <mat-tab label="Personal Informations">
           <mat-form-field>
             <mat-label>First Name</mat-label>
@@ -43,7 +69,7 @@
         <mat-tab label="Department & Position">
           <mat-form-field>
               <mat-label>Department</mat-label>
-              <mat-select formControlName="department_id">
+              <mat-select formControlName="department_id" (selectionChange)="onDepartmentChange($event.value)">
                 @for (item of listOfDepartments().data; track $index) {
                   <mat-option [value]="item.id"> {{ item.name }} </mat-option>
                 }
@@ -62,7 +88,7 @@
           <hr />
           <mat-form-field>
             <mat-label>Position</mat-label>
-            <mat-select formControlName="position_id">
+            <mat-select formControlName="position_id" (selectionChange)="onPositionChange($event.value)">
               @for (item of listOfPositions().data; track $index) {
                 <mat-option [value]="item.id"> {{ item.title }} </mat-option>
               }
@@ -79,10 +105,11 @@
             </mat-form-field>
           </ng-container>
         </mat-tab>
-      <mat-tab label="Skills"> Skills </mat-tab>
+
     </mat-tab-group>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
+  <button matButton class="edit-btn" (click)="onSubmit()" [disabled]="hasChanges()">Save</button>
   <button matButton class="cancel-btn" (click)="onCancel()" mat-dialog-close>Cancel</button>
 </mat-dialog-actions>
