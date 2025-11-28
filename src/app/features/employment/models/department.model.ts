@@ -4,8 +4,8 @@ export interface DepartmentModel {
   id: string
   name: string
   description: string
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface DepartmentUpdateModel {
@@ -17,16 +17,16 @@ export interface DepartmentApiData {
   id: string
   name: string
   description: string
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface DepartmentUiData {
   id: string
   name: string
   description: string
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface DepartmentPage {

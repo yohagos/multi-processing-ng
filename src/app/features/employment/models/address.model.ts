@@ -6,8 +6,8 @@ export interface AddressUiData {
   zip_code: string
   country: string
   is_primary: boolean
-  created_at: Date
-  updated_at: Date
+  created_at?: Date
+  updated_at?: Date
 }
 
 export interface AddressApiData {
@@ -18,6 +18,6 @@ export interface AddressApiData {
   zip_code: string
   country: string
   is_primary: boolean
-  created_at: Date
-  updated_at: Date
+  created_at?: Date
+  updated_at?: Date
 }
