@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   inject,
   OnDestroy,
@@ -25,7 +26,7 @@ import { DepartmentService } from '../../departments/services/department-service
 import { PositionService } from '../../positions/services/position-service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
-import { Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { PositionUiData } from '../../models/position.model';
 import { DepartmentUiData } from '../../models/department.model';
@@ -49,7 +50,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './user-edit.html',
   styleUrl: './user-edit.scss',
 })
-export class UserEdit implements OnInit, OnDestroy {
+export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   private userService = inject(UserService);
   private skillService = inject(SkillService);
   private departmentService = inject(DepartmentService);
@@ -91,7 +92,6 @@ export class UserEdit implements OnInit, OnDestroy {
 
   selectedPosition = signal<PositionUiData | undefined>(undefined);
   selectedDepartment = signal<DepartmentUiData | undefined>(undefined);
-  selectedSkills = signal<SkillUiData[]>([])
 
   userSkills = signal<SkillUiData[]>([])
 
@@ -136,8 +136,6 @@ export class UserEdit implements OnInit, OnDestroy {
         }
 
         this.initialFormValue = JSON.parse(JSON.stringify(this.userWithDetailsForm.getRawValue()));
-
-        console.log(this.userWithDetailsForm.getRawValue());
       });
   }
 
@@ -145,6 +143,23 @@ export class UserEdit implements OnInit, OnDestroy {
     this.positionService.loadPositionList();
     this.departmentService.loadDepatments();
     this.skillService.loadSkills();
+  }
+
+  ngAfterViewInit(): void {
+    this.userWithDetailsForm.valueChanges
+    .pipe(
+      debounceTime(150),
+      distinctUntilChanged(
+        (prev, curr) =>
+          prev.first_name === curr.first_name && prev.last_name === curr.last_name
+      )
+    )
+    .subscribe(values => {
+        if (values.first_name || values.last_name) {
+          const newEmail = `${values.first_name?.toLowerCase()}.${values.last_name?.toLowerCase()}@it-consulting.de`
+          this.userWithDetailsForm.patchValue({email: newEmail})
+        }
+      })
   }
 
   createSkillForm(skill: SkillUiData): FormGroup {
@@ -197,11 +212,26 @@ export class UserEdit implements OnInit, OnDestroy {
   }
 
   onSkillChange(id: string) {
-    if (this.selectedSkills().find(s => s.id === id)) return
+    if (this.userSkills().find(s => s.id === id)) return
 
     const skill = this.listOfSkills().data.find(sk => sk.id === id)
     if (!skill) return
-    this.selectedSkills().push(skill)
+    this.userSkills().push(skill)
+
+    if (!this.selectedUser()?.id) return
+    this.skillService.addSkillForUser(skill.id, this.selectedUser()!.id)
+  }
+
+  removeSkill(id: string) {
+    if (!this.userSkills().find(s => s.id !== id)) return
+
+    const skill = this.userSkills().find(s => s.id === id)
+    if (!skill) return
+
+    this.userSkills.update(skills => skills.filter(sk => sk.id !== id))
+    if (!this.selectedUser()?.id) return
+
+    this.skillService.removeSkillForUser(skill.id, this.selectedUser()!.id)
   }
 
   onSubmit() {
