@@ -1,8 +1,19 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { UserApiDataWithDetails, UserPage, UserUiDataWithDetails } from '../../models/user.model';
+import {
+  UserApiData,
+  UserApiDataWithDetails,
+  UserPage,
+  UserUiDataWithDetails,
+} from '../../models/user.model';
 import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { UserAdapter } from './user-adapter';
+import { DepartmentService } from '../../departments/services/department-service';
+import { AddressService } from '../../address/services/address-service';
+import { DepartmentApiData } from '../../models/department.model';
+import { PositionApiData } from '../../models/position.model';
+import { AddressApiData } from '../../models/address.model';
+import { PositionService } from '../../positions/services/position-service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +22,10 @@ export class UserService {
   private userAdapterService = inject(UserAdapter);
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:8080/api/user';
+
+  private departmentService = inject(DepartmentService);
+  private positionService = inject(PositionService)
+  private addressService = inject(AddressService);
 
   public userPage: WritableSignal<UserPage> = signal({
     data: [],
@@ -31,7 +46,6 @@ export class UserService {
 
     this.http.get(this.baseUrl, { params, observe: 'response' }).subscribe({
       next: (response) => {
-        // console.log("Load users response => ", (response.body as UserPage).data)
         this.userPage.set({
           data: (response.body as UserPage).data,
           total: (response.body as UserPage).total,
@@ -109,6 +123,45 @@ export class UserService {
       })
     );
   } */
+
+  public updateUserInformations(userData: UserUiDataWithDetails) {
+    console.log('User Service | content of userwithdetailsform => ', userData);
+
+    const user: UserApiData = {
+      id: userData.id,
+      first_name: userData.first_name,
+      last_name: userData.last_name,
+      email: userData.email,
+      department_id: userData.department_id,
+      position_id: userData.position_id,
+      hire_date: userData.hire_date,
+      phone: userData.phone,
+      date_of_birth: userData.date_of_birth,
+    }
+    
+    const department: DepartmentApiData = {
+      id: userData.department_id,
+      name: userData.department.name,
+      description: userData.department.description,
+    }
+
+    const position: PositionApiData = {
+      id: userData.position_id,
+      title: userData.position.title,
+      level: userData.position.level,
+      department_id: userData.department_id,
+    }
+
+    const address: AddressApiData = {
+      id: userData.address!.id,
+      user_id: userData.id,
+      street: userData.address!.street,
+      city: userData.address!.city,
+      zip_code: userData.address!.zip_code,
+      country: userData.address!.country,
+      is_primary: userData.address!.is_primary,
+    }
+  }
 
   public deleteUserById(id: string): Observable<void> {
     this.error.set(null);

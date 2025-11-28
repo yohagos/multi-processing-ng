@@ -4,6 +4,7 @@ import { DepartmentAdapter } from '../../departments/services/department-adapter
 import { PositionAdapter } from '../../positions/services/position-adapter';
 import { AddressAdapter } from '../../address/services/address-adapter';
 import { SkillAdapter } from '../../skill/services/skill-adapter';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -57,5 +58,26 @@ export class UserAdapter {
 
   toUiListWithDetails(data: UserApiDataWithDetails[]): UserUiDataWithDetails[] {
     return data.map((u) => this.toUiDataWithDetails(u))
+  }
+
+  toUserWithDetails(id: string, data: FormGroup): UserUiDataWithDetails {
+    return {
+      id: id,
+      full_name: `${data.get('first_name')?.value} ${data.get('last_name')?.value}`,
+      first_name: data.get('first_name')?.value,
+      last_name: data.get('last_name')?.value,
+      email: data.get('email')?.value,
+      department_id: data.get('department_id')?.value,
+      position_id: data.get('position_id')?.value,
+      hire_date: data.get('hire_date')?.value,
+      phone: data.get('phone')?.value,
+      date_of_birth: data.get('date_of_birth')?.value,
+      created_at: data.get('created_at')?.value,
+      updated_at: data.get('updated_at')?.value,
+      department: data.get('department')?.value,
+      position: data.get('position')?.value,
+      skill: [],
+      address: data.get('address')?.value,
+    }
   }
 }

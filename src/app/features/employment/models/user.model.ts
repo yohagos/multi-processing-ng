@@ -35,7 +35,7 @@ export interface UserPage {
   error: HttpErrorResponse | null
 }
 
-/* export interface UserApiData {
+export interface UserApiData {
   id: string
   first_name: string
   last_name: string
@@ -45,8 +45,8 @@ export interface UserPage {
   hire_date: Date
   phone: string
   date_of_birth: string
-  created_at: Date
-  updated_at: Date
+  created_at?: Date
+  updated_at?: Date
 }
 
 export interface UserUiData {
@@ -62,7 +62,7 @@ export interface UserUiData {
   date_of_birth: string
   created_at: Date
   updated_at: Date
-} */
+}
 
 export interface UserApiDataWithDetails {
   id: string

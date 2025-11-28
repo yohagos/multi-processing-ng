@@ -31,6 +31,9 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { PositionUiData } from '../../models/position.model';
 import { DepartmentUiData } from '../../models/department.model';
 import { MatIconModule } from '@angular/material/icon';
+import { UserUiDataWithDetails } from '../../models/user.model';
+import { AddressApiData } from '../../models/address.model';
+import { UserAdapter } from '../services/user-adapter';
 
 @Component({
   selector: 'app-user-edit',
@@ -52,6 +55,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   private userService = inject(UserService);
+  private userAdapterService = inject(UserAdapter)
   private skillService = inject(SkillService);
   private departmentService = inject(DepartmentService);
   private positionService = inject(PositionService);
@@ -93,6 +97,8 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   selectedPosition = signal<PositionUiData | undefined>(undefined);
   selectedDepartment = signal<DepartmentUiData | undefined>(undefined);
 
+  currentAddress = signal<AddressApiData | undefined>(undefined)
+
   userSkills = signal<SkillUiData[]>([])
 
   private initialFormValue: any;
@@ -133,6 +139,9 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
         if (user.skill && user.skill.length > 0) {
           this.loadSkills(user.skill);
           this.userSkills.set(user.skill)
+          this.currentAddress.set(user.address)
+          this.selectedDepartment.set(user.department)
+          this.selectedPosition.set(user.position)
         }
 
         this.initialFormValue = JSON.parse(JSON.stringify(this.userWithDetailsForm.getRawValue()));
@@ -184,7 +193,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
 
   hasChanges(): boolean {
     const currentValue = this.userWithDetailsForm.getRawValue()
-    return JSON.stringify(currentValue) !== JSON.stringify(this.initialFormValue);
+    return JSON.stringify(currentValue) === JSON.stringify(this.initialFormValue);
   }
 
   onPositionChange(id: string) {
@@ -235,7 +244,14 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit() {
+    console.log("clicked on save")
     if (this.selectedUser() && this.selectedUser()!.id) {
+      let userData = this.userAdapterService.toUserWithDetails(this.selectedUser()!.id, this.userWithDetailsForm)
+      if (this.selectedPosition()) userData.position = this.selectedPosition()!
+      if (this.selectedDepartment()) userData.department = this.selectedDepartment()!
+      if (this.currentAddress() && this.currentAddress()?.id) userData.address = this.currentAddress()
+        console.log("UserData before calling service => ", userData)
+      this.userService.updateUserInformations(userData)
     }
   }
 
