@@ -37,4 +37,6 @@ export class PositionService {
       }
     })
   }
+
+  updatePosition(pos: PositionApiData) {}
 }

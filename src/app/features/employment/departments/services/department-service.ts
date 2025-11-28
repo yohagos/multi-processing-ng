@@ -34,4 +34,8 @@ export class DepartmentService {
       }
     })
   }
+
+  updateDepartment(dep: DepartmentApiData) {
+
+  }
 }
