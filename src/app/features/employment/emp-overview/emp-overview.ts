@@ -22,12 +22,6 @@ export class EmpOverview {
       link: 'employment/users',
     },
     {
-      title: "Users /w Details",
-      description: "A clear overview of current employees, with affiliation to departments and position.",
-      image: undefined,
-      link: 'users/with-details',
-    },
-    {
       title: "Departments",
       description: "Tabular overview of departments which we currently have.",
       image: undefined,
