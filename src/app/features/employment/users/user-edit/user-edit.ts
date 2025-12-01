@@ -1,18 +1,5 @@
-import {
-  AfterViewInit,
-  Component,
-  inject,
-  OnDestroy,
-  OnInit,
-  signal,
-} from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { UserService } from '../services/user-service';
@@ -26,14 +13,15 @@ import { DepartmentService } from '../../departments/services/department-service
 import { PositionService } from '../../positions/services/position-service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, mergeMap, Subject, takeUntil } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { PositionUiData } from '../../models/position.model';
-import { DepartmentUiData } from '../../models/department.model';
+import { PositionApiData, PositionUiData } from '../../models/position.model';
+import { DepartmentApiData, DepartmentUiData } from '../../models/department.model';
 import { MatIconModule } from '@angular/material/icon';
-import { UserUiDataWithDetails } from '../../models/user.model';
+import { UserApiData, UserUiDataWithDetails } from '../../models/user.model';
 import { AddressApiData } from '../../models/address.model';
 import { UserAdapter } from '../services/user-adapter';
+import { AddressService } from '../../address/services/address-service';
 
 @Component({
   selector: 'app-user-edit',
@@ -55,22 +43,23 @@ import { UserAdapter } from '../services/user-adapter';
 })
 export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   private userService = inject(UserService);
-  private userAdapterService = inject(UserAdapter)
+  private userAdapterService = inject(UserAdapter);
   private skillService = inject(SkillService);
   private departmentService = inject(DepartmentService);
   private positionService = inject(PositionService);
+  private addressService = inject(AddressService)
   private fb = inject(FormBuilder);
 
   selectedUser = this.userService.selectedUser;
   skillsByUserId = this.skillService.skillsByUserId;
   listOfDepartments = this.departmentService.departmentList;
   listOfPositions = this.positionService.positionsList;
-  listOfSkills = this.skillService.skillList
+  listOfSkills = this.skillService.skillList;
 
   userWithDetailsForm = this.fb.group({
     first_name: ['', [Validators.required]],
     last_name: ['', [Validators.required]],
-    email: [{value: '', disabled: true}, [Validators.required, Validators.email]],
+    email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
     department_id: ['', [Validators.required]],
     position_id: ['', [Validators.required]],
     phone: ['', [Validators.required]],
@@ -84,6 +73,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
       level: [{ value: '', disabled: true }],
     }),
     address: this.fb.group({
+      id: [''],
       street: [''],
       city: [''],
       zip_code: [''],
@@ -97,9 +87,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   selectedPosition = signal<PositionUiData | undefined>(undefined);
   selectedDepartment = signal<DepartmentUiData | undefined>(undefined);
 
-  currentAddress = signal<AddressApiData | undefined>(undefined)
-
-  userSkills = signal<SkillUiData[]>([])
+  userSkills = signal<SkillUiData[]>([]);
 
   private initialFormValue: any;
 
@@ -119,12 +107,14 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
           phone: user.phone,
 
           address: {
+            id: user.address?.id,
             street: user.address?.street,
             city: user.address?.city,
             zip_code: user.address?.zip_code,
             country: user.address?.country,
           },
         });
+        console.log("Address from user => ", user.address)
 
         this.userWithDetailsForm.get('position')?.patchValue({
           title: user.position.title,
@@ -138,10 +128,9 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
 
         if (user.skill && user.skill.length > 0) {
           this.loadSkills(user.skill);
-          this.userSkills.set(user.skill)
-          this.currentAddress.set(user.address)
-          this.selectedDepartment.set(user.department)
-          this.selectedPosition.set(user.position)
+          this.userSkills.set(user.skill);
+          this.selectedDepartment.set(user.department);
+          this.selectedPosition.set(user.position);
         }
 
         this.initialFormValue = JSON.parse(JSON.stringify(this.userWithDetailsForm.getRawValue()));
@@ -156,19 +145,18 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.userWithDetailsForm.valueChanges
-    .pipe(
-      debounceTime(150),
-      distinctUntilChanged(
-        (prev, curr) =>
-          prev.first_name === curr.first_name && prev.last_name === curr.last_name
+      .pipe(
+        debounceTime(150),
+        distinctUntilChanged(
+          (prev, curr) => prev.first_name === curr.first_name && prev.last_name === curr.last_name
+        )
       )
-    )
-    .subscribe(values => {
+      .subscribe((values) => {
         if (values.first_name || values.last_name) {
-          const newEmail = `${values.first_name?.toLowerCase()}.${values.last_name?.toLowerCase()}@it-consulting.de`
-          this.userWithDetailsForm.patchValue({email: newEmail})
+          const newEmail = `${values.first_name?.toLowerCase()}.${values.last_name?.toLowerCase()}@it-consulting.de`;
+          this.userWithDetailsForm.patchValue({ email: newEmail });
         }
-      })
+      });
   }
 
   createSkillForm(skill: SkillUiData): FormGroup {
@@ -192,7 +180,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   }
 
   hasChanges(): boolean {
-    const currentValue = this.userWithDetailsForm.getRawValue()
+    const currentValue = this.userWithDetailsForm.getRawValue();
     return JSON.stringify(currentValue) === JSON.stringify(this.initialFormValue);
   }
 
@@ -221,37 +209,34 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSkillChange(id: string) {
-    if (this.userSkills().find(s => s.id === id)) return
+    if (this.userSkills().find((s) => s.id === id)) return;
 
-    const skill = this.listOfSkills().data.find(sk => sk.id === id)
-    if (!skill) return
-    this.userSkills().push(skill)
+    const skill = this.listOfSkills().data.find((sk) => sk.id === id);
+    if (!skill) return;
+    this.userSkills().push(skill);
 
-    if (!this.selectedUser()?.id) return
-    this.skillService.addSkillForUser(skill.id, this.selectedUser()!.id)
+    if (!this.selectedUser()?.id) return;
+    this.skillService.addSkillForUser(skill.id, this.selectedUser()!.id);
   }
 
   removeSkill(id: string) {
-    if (!this.userSkills().find(s => s.id !== id)) return
+    if (!this.userSkills().find((s) => s.id !== id)) return;
 
-    const skill = this.userSkills().find(s => s.id === id)
-    if (!skill) return
+    const skill = this.userSkills().find((s) => s.id === id);
+    if (!skill) return;
 
-    this.userSkills.update(skills => skills.filter(sk => sk.id !== id))
-    if (!this.selectedUser()?.id) return
+    this.userSkills.update((skills) => skills.filter((sk) => sk.id !== id));
+    if (!this.selectedUser()?.id) return;
 
-    this.skillService.removeSkillForUser(skill.id, this.selectedUser()!.id)
+    this.skillService.removeSkillForUser(skill.id, this.selectedUser()!.id);
   }
 
   onSubmit() {
-    console.log("clicked on save")
-    if (this.selectedUser() && this.selectedUser()!.id) {
-      let userData = this.userAdapterService.toUserWithDetails(this.selectedUser()!.id, this.userWithDetailsForm)
-      if (this.selectedPosition()) userData.position = this.selectedPosition()!
-      if (this.selectedDepartment()) userData.department = this.selectedDepartment()!
-      if (this.currentAddress() && this.currentAddress()?.id) userData.address = this.currentAddress()
-        console.log("UserData before calling service => ", userData)
-      this.userService.updateUserInformations(userData)
+    console.log('clicked on save');
+    if (this.selectedUser() && this.selectedUser()?.id) {
+      const user = this.userAdapterService.toUserWithDetails(this.selectedUser()!.id, this.userWithDetailsForm)
+      console.log("Adjusted User Object => ", user)
+      this.userService.updateAllUserData(user)
     }
   }
 
