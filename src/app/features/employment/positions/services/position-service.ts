@@ -2,7 +2,7 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { PositionAdapter } from './position-adapter';
 import { HttpClient } from '@angular/common/http';
 import { PositionApiData, PositionPage } from '../../models/position.model';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { DepartmentApiData } from '../../models/department.model';
 
 @Injectable({
@@ -38,5 +38,18 @@ export class PositionService {
     })
   }
 
-  updatePosition(pos: PositionApiData) {}
+  updatePosition(pos: PositionApiData): Observable<void> {
+    if (pos.id === undefined) {
+      return this.createPosition(pos)
+    }
+    return this.httpClient.patch(`${this.baseUrl}/${pos.id}`, pos).pipe(
+      catchError((err) => of(err))
+    )
+  }
+
+  createPosition(pos: PositionApiData): Observable<void> {
+    return this.httpClient.post(this.baseUrl, pos).pipe(
+      catchError((err) => of(err))
+    )
+  }
 }

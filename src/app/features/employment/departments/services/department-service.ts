@@ -2,7 +2,7 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { DepartmentAdapter } from './department-adapter';
 import { HttpClient } from '@angular/common/http';
 import { DepartmentApiData, DepartmentPage } from '../../models/department.model';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,18 @@ export class DepartmentService {
     })
   }
 
-  updateDepartment(dep: DepartmentApiData) {
+  updateDepartment(dep: DepartmentApiData): Observable<void> {
+    if (dep == undefined) {
+      return this.createDepartment(dep)
+    }
+    return this.httpClient.patch(`${this.baseUrl}/${dep.id}`, dep).pipe(
+      catchError((err) => of(err))
+    )
+  }
 
+  createDepartment(dep: DepartmentApiData): Observable<void> {
+    return this.httpClient.post(this.baseUrl, dep).pipe(
+      catchError((err) => of(err))
+    )
   }
 }
