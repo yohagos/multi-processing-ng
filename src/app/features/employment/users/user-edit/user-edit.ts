@@ -13,15 +13,14 @@ import { DepartmentService } from '../../departments/services/department-service
 import { PositionService } from '../../positions/services/position-service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
-import { debounceTime, distinctUntilChanged, mergeMap, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { PositionApiData, PositionUiData } from '../../models/position.model';
-import { DepartmentApiData, DepartmentUiData } from '../../models/department.model';
+import { PositionUiData } from '../../models/position.model';
+import { DepartmentUiData } from '../../models/department.model';
 import { MatIconModule } from '@angular/material/icon';
-import { UserApiData, UserUiDataWithDetails } from '../../models/user.model';
-import { AddressApiData } from '../../models/address.model';
 import { UserAdapter } from '../services/user-adapter';
 import { AddressService } from '../../address/services/address-service';
+import { UserApiDataWithDetails } from '../../models/user.model';
 
 @Component({
   selector: 'app-user-edit',
@@ -47,7 +46,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   private skillService = inject(SkillService);
   private departmentService = inject(DepartmentService);
   private positionService = inject(PositionService);
-  private addressService = inject(AddressService)
+  private addressService = inject(AddressService);
   private fb = inject(FormBuilder);
 
   selectedUser = this.userService.selectedUser;
@@ -56,24 +55,28 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   listOfPositions = this.positionService.positionsList;
   listOfSkills = this.skillService.skillList;
 
-  userWithDetailsForm = this.fb.group({
-    first_name: ['', [Validators.required]],
-    last_name: ['', [Validators.required]],
-    email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
-    department_id: ['', [Validators.required]],
-    position_id: ['', [Validators.required]],
-    phone: ['', [Validators.required]],
-
+  form = this.fb.group({
+    user: this.fb.group({
+      first_name: ['', [Validators.required]],
+      last_name: ['', [Validators.required]],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
+      department_id: ['', [Validators.required]],
+      position_id: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
+    }),
     department: this.fb.group({
+      id: [''],
       name: [{ value: '', disabled: true }],
       description: [{ value: '', disabled: true }],
     }),
     position: this.fb.group({
+      id: [''],
       title: [{ value: '', disabled: true }],
       level: [{ value: '', disabled: true }],
     }),
     address: this.fb.group({
       id: [''],
+      user_id: [''],
       street: [''],
       city: [''],
       zip_code: [''],
@@ -91,37 +94,42 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
 
   private initialFormValue: any;
 
+  originalData: UserApiDataWithDetails | undefined
+
   constructor() {
     toObservable(this.userService.selectedUser)
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
         if (!user) return;
+        this.originalData = user
         this.skillService.getSkillsByUserId(user?.id);
 
-        this.userWithDetailsForm.patchValue({
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          department_id: user.department_id,
-          position_id: user.position_id,
-          phone: user.phone,
-
-          address: {
-            id: user.address?.id,
-            street: user.address?.street,
-            city: user.address?.city,
-            zip_code: user.address?.zip_code,
-            country: user.address?.country,
-          },
+        this.form.get("user")?.patchValue({
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            department_id: user.department_id,
+            position_id: user.position_id,
+            phone: user.phone,
         });
-        console.log("Address from user => ", user.address)
 
-        this.userWithDetailsForm.get('position')?.patchValue({
+        this.form.get("address")?.patchValue({
+            id: user.address!.id,
+            user_id: user.id,
+            street: user.address!.street,
+            city: user.address!.city,
+            zip_code: user.address!.zip_code,
+            country: user.address!.country,
+        });
+
+        this.form.get('position')?.patchValue({
+          id: user.position_id,
           title: user.position.title,
           level: user.position.level.toString(),
         });
 
-        this.userWithDetailsForm.get('department')?.patchValue({
+        this.form.get('department')?.patchValue({
+          id: user.department_id,
           name: user.department.name,
           description: user.department.description,
         });
@@ -133,7 +141,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
           this.selectedPosition.set(user.position);
         }
 
-        this.initialFormValue = JSON.parse(JSON.stringify(this.userWithDetailsForm.getRawValue()));
+        this.initialFormValue = JSON.parse(JSON.stringify(this.form.getRawValue()));
       });
   }
 
@@ -144,17 +152,18 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.userWithDetailsForm.valueChanges
+    this.form.valueChanges
       .pipe(
         debounceTime(150),
         distinctUntilChanged(
-          (prev, curr) => prev.first_name === curr.first_name && prev.last_name === curr.last_name
+          (prev, curr) => prev.user?.first_name === curr.user?.first_name
+                          && prev.user?.last_name === curr.user?.last_name
         )
       )
       .subscribe((values) => {
-        if (values.first_name || values.last_name) {
-          const newEmail = `${values.first_name?.toLowerCase()}.${values.last_name?.toLowerCase()}@it-consulting.de`;
-          this.userWithDetailsForm.patchValue({ email: newEmail });
+        if (values.user?.first_name || values.user?.last_name) {
+          const newEmail = `${values.user?.first_name?.toLowerCase()}.${values.user?.last_name?.toLowerCase()}@it-consulting.de`;
+          this.form.get("user")?.get("email")?.setValue(newEmail)
         }
       });
   }
@@ -168,7 +177,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadSkills(skills: SkillUiData[]) {
-    const skillsArray = this.userWithDetailsForm.get('skill') as FormArray;
+    const skillsArray = this.form.get('skill') as FormArray;
 
     while (skillsArray.length > 0) {
       skillsArray.removeAt(0);
@@ -180,7 +189,7 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   }
 
   hasChanges(): boolean {
-    const currentValue = this.userWithDetailsForm.getRawValue();
+    const currentValue = this.form.getRawValue();
     return JSON.stringify(currentValue) === JSON.stringify(this.initialFormValue);
   }
 
@@ -189,7 +198,8 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
     this.selectedPosition.set(pos);
 
     if (pos) {
-      this.userWithDetailsForm.get('position')?.patchValue({
+      this.form.get('position')?.patchValue({
+        id: pos.id,
         title: pos.title,
         level: pos.level.toString(),
       });
@@ -201,7 +211,8 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
     this.selectedDepartment.set(dep);
 
     if (dep) {
-      this.userWithDetailsForm.get('department')?.patchValue({
+      this.form.get('department')?.patchValue({
+        id: dep.id,
         name: dep.name,
         description: dep.description,
       });
@@ -232,11 +243,42 @@ export class UserEdit implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log('clicked on save');
     if (this.selectedUser() && this.selectedUser()?.id) {
-      const user = this.userAdapterService.toUserWithDetails(this.selectedUser()!.id, this.userWithDetailsForm)
-      console.log("Adjusted User Object => ", user)
-      this.userService.updateAllUserData(user)
+      if (this.selectedDepartment()) {
+        this.patchDepartmentForSubmit();
+      }
+      if (this.selectedPosition()) {
+        this.patchPositionForSubmit();
+      }
+
+      const user = this.userAdapterService.toUserWithDetails(
+        this.selectedUser()!.id,
+        this.form,
+        this.initialFormValue
+      );
+      this.userService.updateAllUserData(user, this.originalData!);
+    }
+  }
+
+  patchDepartmentForSubmit() {
+    if (this.selectedDepartment()?.id) {
+      this.form.get("user")?.get('department_id')?.setValue(this.selectedDepartment()!.id);
+      this.form.get('department')?.patchValue({
+        id: this.selectedDepartment()!.id,
+        description: this.selectedDepartment()!.description,
+        name: this.selectedDepartment()!.name,
+      });
+    }
+  }
+
+  patchPositionForSubmit() {
+    if (this.selectedDepartment()?.id) {
+      this.form.get("user")?.get('position_id')?.setValue(this.selectedPosition()!.id);
+      this.form.get('position')?.patchValue({
+        id: this.selectedPosition()!.id,
+        level: this.selectedPosition()!.level.toString(),
+        title: this.selectedPosition()!.title,
+      });
     }
   }
 
