@@ -1,8 +1,8 @@
 <mat-drawer-container class="drawer" autosize>
-  <mat-drawer #drawer class="drawer-nav" mode="side" opened>
+  <mat-drawer #drawer class="drawer-nav" mode="side" closed>
     <div class="navs">
-      <button matButton class="nav-btn" (click)="navigate('users')">Users</button>
-      <button matButton class="nav-btn" (click)="navigate('crypto')">Cryptos</button>
+      <button matButton class="nav-btn" (click)="navigate('employment/overview'); drawer.toggle()">Employment</button>
+      <button matButton class="nav-btn" (click)="navigate('crypto'); drawer.toggle()">Cryptos</button>
     </div>
   </mat-drawer>
 

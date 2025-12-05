@@ -1,0 +1,23 @@
+mat-card {
+  width: 36em;
+  min-height: 30em;
+  margin: 2em auto;
+
+  mat-card-header {
+    margin: 1.2em 2em;
+  }
+
+  mat-tab-group {
+    margin-bottom: 30px;
+  }
+}
+
+mat-divider {
+  margin: 0.5em;
+}
+
+:host ::ng-deep .description {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  line-height: 1.5 !important;
+}

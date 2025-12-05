@@ -1,0 +1,18 @@
+<mat-toolbar class="user-filter">
+  <mat-form-field>
+    <mat-label>Search by Name</mat-label>
+    <input matInput [formControl]="searchInput">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Filter by Department</mat-label>
+    <mat-select [formControl]="departmentInput">
+      <mat-option [value]="" selected></mat-option>
+      @for (item of departments().data; track $index) {
+        <mat-option [value]="item.name">{{item.name}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <button matButton class="add-btn">Add User</button>
+</mat-toolbar>

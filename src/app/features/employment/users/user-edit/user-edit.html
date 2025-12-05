@@ -1,0 +1,119 @@
+<h2 mat-dialog-title>Edit Profile for {{ selectedUser()?.first_name }} {{ selectedUser()?.last_name }}</h2>
+<mat-dialog-content animationDuration="1100ms">
+  <form [formGroup]="form">
+    <mat-tab-group>
+        <mat-tab label="Personal Informations">
+          <ng-container formGroupName="user">
+            <mat-form-field>
+            <mat-label>First Name</mat-label>
+            <input matInput type="text" formControlName="first_name"/>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Last Name</mat-label>
+            <input matInput type="text" formControlName="last_name"/>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" formControlName="email" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Phone</mat-label>
+            <input matInput type="text" formControlName="phone" />
+          </mat-form-field>
+          </ng-container>
+        </mat-tab>
+        <mat-tab label="Address Informations">
+          <ng-container formGroupName="address">
+            <mat-form-field>
+              <mat-label>Street</mat-label>
+              <input matInput type="text" formControlName="street" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>City</mat-label>
+              <input matInput type="text" formControlName="city" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Zip Code</mat-label>
+              <input matInput type="text" formControlName="zip_code"/>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Country</mat-label>
+              <input matInput type="text" formControlName="country" />
+            </mat-form-field>
+          </ng-container>
+        </mat-tab>
+        <mat-tab label="Department & Position">
+          <ng-container formGroupName="user">
+            <mat-form-field>
+              <mat-label>Department</mat-label>
+              <mat-select formControlName="department_id" (selectionChange)="onDepartmentChange($event.value)">
+                @for (item of listOfDepartments().data; track $index) {
+                  <mat-option [value]="item.id"> {{ item.name }} </mat-option>
+                }
+              </mat-select>
+          </mat-form-field>
+          </ng-container>
+          <ng-container formGroupName="department">
+            <mat-form-field>
+              <mat-label>Name</mat-label>
+              <input matInput type="text" formControlName="name" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Description</mat-label>
+              <input matInput type="text" formControlName="description" />
+            </mat-form-field>
+          </ng-container>
+          <hr />
+          <ng-container formGroupName="user">
+            <mat-form-field>
+            <mat-label>Position</mat-label>
+            <mat-select formControlName="position_id" (selectionChange)="onPositionChange($event.value)">
+              @for (item of listOfPositions().data; track $index) {
+                <mat-option [value]="item.id"> {{ item.title }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          </ng-container>
+          <ng-container formGroupName="position">
+            <mat-form-field>
+              <mat-label>Title</mat-label>
+              <input matInput type="text" formControlName="title" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Level</mat-label>
+              <input matInput type="text" formControlName="level" />
+            </mat-form-field>
+          </ng-container>
+        </mat-tab>
+        <mat-tab label="Skills">
+        <div class="skill-select">
+          <mat-form-field >
+            <mat-label>Select Skill</mat-label>
+            <mat-select (selectionChange)="onSkillChange($event.value)">
+              @for (item of listOfSkills().data; track $index) {
+                <mat-option [value]="item.id"> {{item.name}} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+          @for (item of userSkills(); track $index) {
+            <div class="skill-select">
+              <mat-form-field>
+                <input matInput [value]="item.name">
+              </mat-form-field>
+              <button matIconButton (click)="removeSkill(item.id)">
+                <mat-icon>
+                  remove
+                </mat-icon>
+              </button>
+            </div>
+          }
+      </mat-tab>
+    </mat-tab-group>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton class="edit-btn" (click)="onSubmit()" [disabled]="hasChanges()">Save</button>
+  <button matButton class="cancel-btn" (click)="onCancel()" mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

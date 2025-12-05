@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { Overview } from './features/overview/overview';
-import { Users } from './features/users/users';
 import { Crypto } from './features/crypto/crypto';
 
 export const routes: Routes = [
@@ -9,8 +8,8 @@ export const routes: Routes = [
     component: Overview
   },
   {
-    path: "users",
-    component: Users
+    path: "employment",
+    loadChildren: () => import("./features/employment/employment.routes").then(mod => mod.routes),
   },
   {
     path: "crypto",

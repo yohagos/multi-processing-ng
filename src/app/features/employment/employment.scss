@@ -1,0 +1,28 @@
+.emp-toolbar {
+  margin: 0;
+  padding: 0;
+  background: rgba($color: #3330de, $alpha: 0.45);
+
+  .emp-nav, button {
+    .nav-overview-btn {
+      &.mdc-button,
+      &.mat-mdc-button-base,
+      &.mdc-button--outlined,
+      &.mat-mdc-outlined-button,
+      &.mat-unthemed {
+        margin: auto 0.7em;
+        border-radius: 8px;
+        padding: 1.5em 2.5em;
+      }
+    }
+
+    .nav-overview-btn:hover {
+      background-color: #3330de35;
+      color: whitesmoke;
+    }
+  }
+
+  .back-arrow {
+    font-weight: 700;
+  }
+}

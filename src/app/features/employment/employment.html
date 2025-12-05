@@ -1,0 +1,18 @@
+<mat-toolbar class="emp-toolbar">
+  @if (!isOverview()) {
+    <button matIconButton class="back-arrow" (click)="navigateTo('employment/overview')">
+      <mat-icon>
+        arrow_back
+      </mat-icon>
+    </button>
+  }
+  <div class="emp-nav">
+    <button matButton class="nav-overview-btn" (click)="navigateTo('employment/users')">Users</button>
+    <button matButton class="nav-overview-btn" (click)="navigateTo('employment/departments')">Departments</button>
+    <button matButton class="nav-overview-btn" (click)="navigateTo('employment/positions')">Positions</button>
+  </div>
+</mat-toolbar>
+<div class="emp-children">
+  <router-outlet></router-outlet>
+</div>
+

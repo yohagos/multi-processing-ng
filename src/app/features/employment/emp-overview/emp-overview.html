@@ -1,0 +1,9 @@
+<div class="container">
+  @if (cards.length > 1) {
+    @for (item of cards; track $index) {
+      <app-emp-card [cardInfo]="item"></app-emp-card>
+    }
+  } @else {
+    <p class="no-data">Nothin to show for</p>
+  }
+</div>
