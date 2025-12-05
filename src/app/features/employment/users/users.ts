@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserDetail } from './user-detail/user-detail';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UserEdit } from './user-edit/user-edit';
+import { UserFilter } from './user-filter/user-filter';
 
 @Component({
   selector: 'app-users',
@@ -31,6 +32,8 @@ import { UserEdit } from './user-edit/user-edit';
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
+
+    UserFilter,
   ],
   templateUrl: './users.html',
   styleUrl: './users.scss',
@@ -82,14 +85,14 @@ export class Users implements OnInit, AfterViewInit, OnDestroy {
   showDetailsForUser(user: UserUiDataWithDetails) {
     this.userService.selectedUser.set(user);
     const dialogRef = this.dialog.open(UserDetail, {
-      minHeight: "30em",
+      minHeight: "40em",
     })
   }
 
   editUser(user: UserUiDataWithDetails) {
     this.userService.selectedUser.set(user);
     const dialogRef = this.dialog.open(UserEdit, {
-      minHeight: "30em",
+      minHeight: "40em",
     })
   }
 

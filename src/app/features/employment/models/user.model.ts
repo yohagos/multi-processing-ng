@@ -4,31 +4,6 @@ import { PositionApiData, PositionUiData } from "./position.model"
 import { SkillApiData, SkillUiData } from "./skill.model"
 import { AddressApiData, AddressUiData } from "./address.model"
 
-/* export interface UserModel {
-  id: string
-  first_name: string
-  last_name: string
-  email: string
-  department_id: string
-  position_id: string
-  hire_date: Date
-  phone: string
-  date_of_birth: string
-  created_at: Date
-  updated_at: Date
-}
-
-export interface UserUpdateModel {
-  first_name: string
-  last_name: string
-  email: string
-  department_id: string
-  position_id: string
-  hire_date: Date
-  phone: string
-  date_of_birth: string
-} */
-
 export interface UserPage {
   data: UserUiDataWithDetails[]
   total: number
