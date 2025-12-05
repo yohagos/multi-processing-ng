@@ -60,24 +60,45 @@ export class UserAdapter {
     return data.map((u) => this.toUiDataWithDetails(u))
   }
 
-  toUserWithDetails(id: string, data: FormGroup): UserUiDataWithDetails {
-    return {
+  toUserWithDetails(id: string, data: FormGroup, initialFormValue?: any): UserUiDataWithDetails {
+    const dep = data.get('department')?.value
+    const pos = data.get('position')?.value
+    const add = data.get('address')?.value
+
+    return{
       id: id,
-      full_name: `${data.get('first_name')?.value} ${data.get('last_name')?.value}`,
-      first_name: data.get('first_name')?.value,
-      last_name: data.get('last_name')?.value,
-      email: data.get('email')?.value,
-      department_id: data.get('department_id')?.value,
-      position_id: data.get('position_id')?.value,
-      hire_date: data.get('hire_date')?.value,
-      phone: data.get('phone')?.value,
-      date_of_birth: data.get('date_of_birth')?.value,
-      created_at: data.get('created_at')?.value,
-      updated_at: data.get('updated_at')?.value,
-      department: data.get('department')?.value,
-      position: data.get('position')?.value,
+      full_name: `${data.get("user")?.get('first_name')?.value} ${data.get("user")?.get('last_name')?.value}`,
+      first_name: data.get("user")?.get('first_name')?.value,
+      last_name: data.get("user")?.get('last_name')?.value,
+      email: data.get("user")?.get('email')?.value,
+      department_id: data.get("user")?.get('department_id')?.value,
+      position_id: data.get("user")?.get('position_id')?.value,
+      hire_date: data.get("user")?.get('hire_date')?.value,
+      phone: data.get("user")?.get('phone')?.value,
+      date_of_birth: data.get("user")?.get('date_of_birth')?.value,
+      created_at: data.get("user")?.get('created_at')?.value,
+      updated_at: data.get("user")?.get('updated_at')?.value,
+      department:{
+        id: dep.id,
+        description: dep.description,
+        name: dep.name,
+      },
+      position:{
+        id: pos.id,
+        department_id: pos.department_id,
+        title: pos.title,
+        level: pos.level,
+      },
       skill: [],
-      address: data.get('address')?.value,
+      address: add ? {
+        id: add.id,
+        user_id: add.user_id,
+        street: add.street,
+        city: add.city,
+        zip_code: add.zip_code,
+        country: add.country,
+        is_primary: add.is_primary,
+      } : undefined,
     }
   }
 }
