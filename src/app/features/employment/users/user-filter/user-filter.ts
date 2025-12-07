@@ -10,6 +10,8 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DepartmentService } from '../../departments/services/department-service';
 import { debounce, debounceTime, map, merge } from 'rxjs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { UserAdd } from '../user-add/user-add';
 
 @Component({
   selector: 'app-user-filter',
@@ -17,6 +19,7 @@ import { debounce, debounceTime, map, merge } from 'rxjs';
     ReactiveFormsModule,
 
     MatButtonModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatToolbarModule,
@@ -26,6 +29,7 @@ import { debounce, debounceTime, map, merge } from 'rxjs';
   styleUrl: './user-filter.scss',
 })
 export class UserFilter implements OnInit {
+  private dialog = inject(MatDialog)
   private userService = inject(UserService)
   private departmentService = inject(DepartmentService)
 
@@ -62,4 +66,10 @@ export class UserFilter implements OnInit {
     const params = this.filterParams()
     this.userService.getUsersWithFilter(1, 10, params.searchName, params.departmentName)
   }
+
+  addUser() {
+      const dialogRef = this.dialog.open(UserAdd, {
+        minHeight: "40em"
+      })
+    }
 }
