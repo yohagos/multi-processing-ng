@@ -1,0 +1,11 @@
+.position-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.8em;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}

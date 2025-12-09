@@ -1,1 +1,11 @@
-<p>positions works!</p>
+<div class="position-container">
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  } @else {
+    <div class="grid-container">
+      @for (item of positions().data; track $index) {
+        <app-position-card [position]="item"></app-position-card>
+      }
+    </div>
+  }
+</div>
