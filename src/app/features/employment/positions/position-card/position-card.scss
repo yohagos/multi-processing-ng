@@ -1,0 +1,48 @@
+.card {
+  display: flex;
+  height: 10em;
+  width: 18em;
+
+  background-color: #aaaaaa55;
+  border-radius: 12px;
+
+  .left-area {
+    flex: 0 0 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px;
+  }
+
+  .right-area {
+    flex: 0 0 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px;
+  }
+
+  .content {
+    font-weight: 500;
+    font-size: 15px;
+    padding: 5px;
+  }
+}
+
+.card:hover {
+  span {
+    color: #ddd;
+  }
+
+  background-color: #888888;
+
+  cursor: pointer;
+
+  box-shadow: 4px 6px 8px #33333365;
+
+  transition: span ease 1s, background-color ease 0.7s, box-shadow ease 0.5s;
+}
