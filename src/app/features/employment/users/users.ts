@@ -24,8 +24,6 @@ import { UserFilter } from './user-filter/user-filter';
 @Component({
   selector: 'app-users',
   imports: [
-    CommonModule,
-
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
@@ -86,6 +84,8 @@ export class Users implements OnInit, AfterViewInit, OnDestroy {
     this.userService.selectedUser.set(user);
     const dialogRef = this.dialog.open(UserDetail, {
       minHeight: "40em",
+      maxHeight: "45em",
+      minWidth: "60%",
     })
   }
 
@@ -93,6 +93,8 @@ export class Users implements OnInit, AfterViewInit, OnDestroy {
     this.userService.selectedUser.set(user);
     const dialogRef = this.dialog.open(UserEdit, {
       minHeight: "40em",
+      maxHeight: "45em",
+      minWidth: "60%",
     })
   }
 

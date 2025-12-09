@@ -69,7 +69,9 @@ export class UserFilter implements OnInit {
 
   addUser() {
       const dialogRef = this.dialog.open(UserAdd, {
-        minHeight: "40em"
+        minHeight: "40em",
+        maxHeight: "45em",
+        minWidth: "60%",
       })
     }
 }
