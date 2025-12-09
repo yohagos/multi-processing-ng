@@ -60,10 +60,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border-radius: 8px;
     background-color: rgba($color: #3550e5, $alpha: 0.55) !important;
     color: white !important;
-    _margin: 0.4em;
   }
 }
 
 .edit-btn:disabled {
   background-color: rgba($color: #888, $alpha: 0.7) !important;
+}
+
+.snackbar-success {
+  .mdc-snackbar__surface, .mat-mdc-snackbar-surface {
+    background: rgba($color: #5333ae, $alpha: 0.9) !important;
+  }
+}
+
+.snackbar-error {
+  .mdc-snackbar__surface, .mat-mdc-snackbar-surface {
+    background: rgba($color: #de4444, $alpha: 0.9) !important;
+  }
 }
