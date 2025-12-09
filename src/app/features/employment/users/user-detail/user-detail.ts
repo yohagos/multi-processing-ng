@@ -41,7 +41,6 @@ export class UserDetail implements OnInit, AfterViewInit {
   skillsByUserId = this.skillService.skillsByUserId
 
   constructor() {
-    console.log(this.skillsByUserId())
     effect(() => {
       this.dataSource.data = this.skillsByUserId() || []
     })
