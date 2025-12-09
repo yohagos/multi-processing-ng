@@ -1,1 +1,9 @@
-<p>departments works!</p>
+@if (loading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+} @else {
+  <div class="container">
+    @for (item of departments().data; track $index) {
+      <app-department-card class="department-cards" [department]="item" (click)="openDepartment(item)"></app-department-card>
+    }
+  </div>
+}
