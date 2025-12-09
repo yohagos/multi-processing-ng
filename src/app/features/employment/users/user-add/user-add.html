@@ -14,7 +14,19 @@
         <mat-label>Phone</mat-label>
         <input matInput formControlName="phone">
       </mat-form-field>
-      <div class="stepper-actions">
+      <mat-form-field>
+        <mat-label>Date of Birth</mat-label>
+        <input matInput [matDatepicker]="dobPicker" formControlName="date_of_birth">
+        <mat-datepicker #dobPicker/>
+        <mat-datepicker-toggle [for]="dobPicker" matSuffix/>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Hire Date</mat-label>
+        <input matInput [matDatepicker]="hirePicker" formControlName="hire_date">
+        <mat-datepicker #hirePicker/>
+        <mat-datepicker-toggle [for]="hirePicker" matSuffix/>
+      </mat-form-field>
+      <div>
         <button matButton matStepperNext>
           Next
         </button>
@@ -43,12 +55,12 @@
     </form>
     <div>
       <button matButton matStepperPrevious>
-          Previous
-        </button>
-        <button matButton matStepperNext>
-          Next
-        </button>
-      </div>
+        Previous
+      </button>
+      <button matButton matStepperNext>
+        Next
+      </button>
+    </div>
   </mat-step>
 
   <mat-step [stepControl]="departmentForm" label="Select Department">
@@ -66,6 +78,14 @@
         <input matInput formControlName="description">
       </mat-form-field>
     </form>
+    <div>
+      <button matButton matStepperPrevious>
+        Previous
+      </button>
+      <button matButton matStepperNext>
+        Next
+      </button>
+    </div>
   </mat-step>
 
   <mat-step [stepControl]="positionForm" label="Select Position">
@@ -79,5 +99,13 @@
         </mat-select>
       </mat-form-field>
     </form>
+    <div>
+      <button matButton matStepperPrevious>
+        Previous
+      </button>
+      <button matButton (click)="onSubmit()" [disabled]="!userForm.valid || !addressForm.valid || !departmentForm.valid || !positionForm.valid">
+        Submit
+      </button>
+    </div>
   </mat-step>
 </mat-stepper>

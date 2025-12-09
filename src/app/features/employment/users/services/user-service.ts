@@ -3,6 +3,7 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import {
   UserApiData,
   UserApiDataWithDetails,
+  UserCreateResponse,
   UserPage,
   UserUiDataWithDetails,
 } from '../../models/user.model';
@@ -70,7 +71,7 @@ export class UserService {
         .set('limit', limit.toString())
         .set('searchName', searchName)
         .set('departmentName', departmentName)
-    
+
     this.http.get(this.baseUrl,  {params, observe: 'response'})
         .pipe(
           catchError((err) => {
@@ -112,15 +113,9 @@ export class UserService {
       });
   }
 
-  public createUser(newUser: Partial<UserUiDataWithDetails>): Observable<UserApiDataWithDetails> {
+  public createUser(newUser: Partial<UserUiDataWithDetails>): Observable<UserCreateResponse> {
     this.error.set(null);
-    return this.http.post<UserApiDataWithDetails>(this.baseUrl, newUser).pipe(
-      tap((createdUser) => {
-        /* this.userPage.update((page) => ({
-          ...page,
-          data: [this.userAdapterService.toUiDataWithDetails(createdUser), ...page.data].slice(0, 9),
-        })); */
-      }),
+    return this.http.post<UserCreateResponse>(this.baseUrl, newUser).pipe(
       catchError((err) => {
         this.error.set(err);
         return throwError(() => err);
