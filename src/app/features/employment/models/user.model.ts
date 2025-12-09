@@ -75,3 +75,9 @@ export interface UserUiDataWithDetails {
   skill: SkillUiData[]
   address?: AddressUiData
 }
+
+export interface UserCreateResponse {
+  id: string
+  created_at?: string
+  updated_at?: string
+}
