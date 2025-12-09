@@ -1,0 +1,23 @@
+.dep-card {
+  max-width: 20em;
+
+  hr {
+    border: 2px solid #3344b8b5;
+  }
+}
+
+.dep-card:hover {
+  background-color: rgba($color: #3344b8, $alpha: 0.87);
+
+  hr {
+    border: 2px solid #eeeeeea1;
+  }
+
+  h3, span {
+    color: lightgray;
+  }
+
+  cursor: pointer;
+
+  transition: span ease-in-out 0.5s, background-color ease-in-out 0.5s;
+}
