@@ -67,6 +67,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-color: rgba($color: #888, $alpha: 0.7) !important;
 }
 
+.add-btn:disabled {
+  background-color: rgba($color: #888, $alpha: 0.7) !important;
+}
+
 .snackbar-success {
   .mdc-snackbar__surface, .mat-mdc-snackbar-surface {
     background: rgba($color: #5333ae, $alpha: 0.9) !important;
