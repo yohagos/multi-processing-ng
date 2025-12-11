@@ -20,7 +20,7 @@ export const routes: Routes = [
       },
       {
         path: 'departments',
-        component: Departments,
+        loadChildren: () => import('./departments/department.routes').then(mod => mod.routes),
       },
       {
         path: 'positions',
