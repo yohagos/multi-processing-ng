@@ -1,0 +1,16 @@
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  width: 70%;
+
+  mat-form-field {
+    margin: 1em;
+  }
+
+  textarea {
+    resize: none;
+  }
+}
+
