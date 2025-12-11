@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { DepartmentAdapter } from './department-adapter';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { DepartmentApiData, DepartmentPage } from '../../models/department.model';
 import { catchError, Observable, of } from 'rxjs';
 
@@ -35,6 +35,24 @@ export class DepartmentService {
     })
   }
 
+  loadDepartmentsWithFilter(searchName: string) {
+    const params = new HttpParams()
+        .set('searchName', searchName)
+    this.httpClient.get(this.baseUrl, {params, observe: 'response'}).pipe(
+      catchError((err) => {
+        return of(err)
+      })
+    ).subscribe({
+      next: (result) => {
+        this.departmentList.set({
+          data: (result.body as DepartmentPage).data,
+          total: (result.body as DepartmentPage).total,
+          error: (result.body as DepartmentPage).error,
+        })
+      }
+    })
+  }
+
   updateDepartment(dep: DepartmentApiData): Observable<void> {
     if (dep == undefined) {
       return this.createDepartment(dep)
@@ -44,9 +62,9 @@ export class DepartmentService {
     )
   }
 
-  createDepartment(dep: DepartmentApiData): Observable<void> {
+  createDepartment(dep: Partial<DepartmentApiData>): Observable<void> {
     return this.httpClient.post(this.baseUrl, dep).pipe(
-      catchError((err) => of(err))
+      catchError((err) => of(err)),
     )
   }
 }

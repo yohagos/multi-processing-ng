@@ -80,7 +80,6 @@ export class UserService {
           })
         ).subscribe({
           next: (response) => {
-            console.log(response.body)
             this.userPage.set({
               data: (response.body as UserPage).data,
               total: (response.body as UserPage).total,
