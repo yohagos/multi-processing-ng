@@ -1,0 +1,18 @@
+<mat-toolbar class="department-filter">
+  <div class="inputs">
+    <mat-form-field>
+      <mat-label>Search</mat-label>
+      <input matInput [formControl]="searchInput" />
+      @if (searchInput.value) {
+        <button matSuffix matIconButton aria-label="Clear" (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+  </div>
+  <div class="btns">
+    <button matButton class="add-btn" (click)="openAddDepartment()">
+      Add
+    </button>
+  </div>
+</mat-toolbar>
