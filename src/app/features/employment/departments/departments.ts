@@ -8,6 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DepartmentCard } from './department-card/department-card';
 import { DepartmentUiData } from '../models/department.model';
 import { Router } from '@angular/router';
+import { DepartmentFilter } from './department-filter/department-filter';
 
 @Component({
   selector: 'app-departments',
@@ -18,6 +19,7 @@ import { Router } from '@angular/router';
     MatProgressBarModule,
 
     DepartmentCard,
+    DepartmentFilter,
   ],
   templateUrl: './departments.html',
   styleUrl: './departments.scss',
