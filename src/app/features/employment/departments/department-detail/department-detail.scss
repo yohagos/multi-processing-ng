@@ -1,0 +1,19 @@
+.department-card {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+
+  margin: 3em auto;
+
+  mat-card-content {
+    margin: 1em;
+
+    hr {
+      margin: 1.5em 0em;
+    }
+
+    span {
+      margin: 2.5em 1em;
+    }
+  }
+}
