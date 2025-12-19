@@ -1,0 +1,27 @@
+<h2 mat-dialog-title> Login to Forum </h2>
+<mat-dialog-content>
+  <div class="container">
+    <form [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Username</mat-label>
+        <input matInput [formControl]="form.controls.username">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput [formControl]="form.controls.email">
+      </mat-form-field>
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton class="add-btn" [disabled]="!form.valid" (click)="onSubmit()">
+    Login
+  </button>
+  <button matButton class="cancel-btn" (click)="onCancel()">
+    Cancel
+  </button>
+</mat-dialog-actions>
+
+@if (loading()) {
+  <mat-progress-spinner></mat-progress-spinner>
+}

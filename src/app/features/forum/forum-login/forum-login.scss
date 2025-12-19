@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  margin: 1em auto;
+
+  mat-form-field {
+    width: 70%;
+    display: flex;
+    margin: auto;
+  }
+}
