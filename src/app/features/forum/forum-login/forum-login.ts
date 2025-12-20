@@ -38,20 +38,16 @@ export class ForumLogin {
   onSubmit() {
     const email = this.form.get('email')?.value
     const username = this.form.get('username')?.value
-    console.log("Clicked on Login Submit")
     if (email !== "" && username !== "") {
         this.loading.set(true)
         this.forumLoginService.loginToForum(email!, username!).subscribe({
-          next: (result => {
-            console.log("RESULT from login => ", JSON.stringify(result))
-            this.loading.set(false)
-          })
+          next: () => this.loading.set(false)
         })
+        this.dialogRef.close()
     }
   }
 
   onCancel() {
-    console.log("Closed Forumlogin dialog")
     this.form.reset()
     this.forumLoginService.logoutForumUser()
     this.router.navigate([''])
