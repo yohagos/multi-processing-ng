@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ForumLoginService } from '../services/forum-login-service';
 
 @Component({
   selector: 'app-forum-toolbar',
@@ -16,6 +17,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './forum-toolbar.scss',
 })
 export class ForumToolbar {
+  private forumLoginService = inject(ForumLoginService)
+
+  isUserLoggedIn() {
+    return this.forumLoginService.getCurrentForumUser() !== null 
+  }
+
+  clearStorage() {
+    this.forumLoginService.logoutForumUser()
+  }
 
   /*
   TODO

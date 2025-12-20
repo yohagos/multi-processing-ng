@@ -1,5 +1,7 @@
 <mat-toolbar class="forum-toolbar">
-  <button matIconButton>
-
-  </button>
+  @if (isUserLoggedIn()) {
+    <button matButton (click)="clearStorage()" >
+      Logout
+    </button>
+  }
 </mat-toolbar>
