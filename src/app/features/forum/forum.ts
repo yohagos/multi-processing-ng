@@ -30,6 +30,7 @@ export class Forum {
   openLoginDialog() {
     this.dialog.open(ForumLogin, {
       width: "30em",
+      disableClose: true,
     })
   }
 }
