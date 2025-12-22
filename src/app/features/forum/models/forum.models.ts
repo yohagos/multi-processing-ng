@@ -82,3 +82,20 @@ export interface ForumChannelMemberUi {
   role: string
   joined_at: Date
 }
+
+export interface ForumChannelMessagesApi {
+  channel: ForumChannelApi
+  messages: ForumMessageApi[]
+  page: number
+  limit: number
+  total: number
+}
+
+export interface ForumChannelMessagesUi {
+  channel: ForumChannelUi
+  messages: ForumMessageUi[]
+  page: number
+  limit: number
+  total: number
+}
+
