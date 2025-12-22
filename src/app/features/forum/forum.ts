@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ForumToolbar } from './forum-toolbar/forum-toolbar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { ForumLogin } from './forum-login/forum-login';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ForumLoginService } from './services/forum-login-service';
@@ -19,12 +19,14 @@ import { ForumLoginService } from './services/forum-login-service';
 export class Forum {
   private dialog = inject(MatDialog)
   private forumLoginService = inject(ForumLoginService)
+  private router = inject(Router)
 
   constructor() {
     const userData = this.forumLoginService.getCurrentForumUser()
     if (!userData) {
       this.openLoginDialog()
     }
+    this.router.navigate(['forum/public'])
   }
 
   openLoginDialog() {
