@@ -44,6 +44,7 @@ export class ForumLogin {
           next: () => this.loading.set(false)
         })
         this.dialogRef.close()
+        this.router.navigate(['forum/public'])
     }
   }
 
