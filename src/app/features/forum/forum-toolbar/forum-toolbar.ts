@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ForumLoginService } from '../services/forum-login-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forum-toolbar',
@@ -18,13 +19,15 @@ import { ForumLoginService } from '../services/forum-login-service';
 })
 export class ForumToolbar {
   private forumLoginService = inject(ForumLoginService)
+  private router = inject(Router)
 
   isUserLoggedIn() {
-    return this.forumLoginService.getCurrentForumUser() !== null 
+    return this.forumLoginService.getCurrentForumUser() !== null
   }
 
   clearStorage() {
     this.forumLoginService.logoutForumUser()
+    this.router.navigate([''])
   }
 
   /*
