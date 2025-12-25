@@ -34,6 +34,8 @@ export interface ForumMessageApi {
   is_deleted: boolean
   created_at?: Date
   updated_at?: Date
+  user?: ForumUserApi
+  parent_message?: ForumMessageApi
 }
 
 export interface ForumMessageUi {
@@ -47,6 +49,8 @@ export interface ForumMessageUi {
   is_deleted: boolean
   created_at?: Date
   updated_at?: Date
+  user?: ForumUserUi
+  parent_message?: ForumMessageUi
 }
 
 export interface ForumChannelApi {

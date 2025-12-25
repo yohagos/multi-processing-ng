@@ -3,6 +3,8 @@ import {
   ForumChannelApi,
   ForumChannelMemberApi,
   ForumChannelMemberUi,
+  ForumChannelMessagesApi,
+  ForumChannelMessagesUi,
   ForumChannelUi,
   ForumMessageApi,
   ForumMessageUi,
@@ -97,6 +99,8 @@ export class ForumAdapterService {
       is_deleted: data.is_deleted,
       created_at: data.created_at,
       updated_at: data.updated_at,
+      parent_message: data.parent_message !== undefined ? this.toForumMessageUi(data.parent_message) : undefined,
+      user: data.user !== undefined ? this.toForumUserUi(data.user) : undefined,
     };
   }
 
@@ -112,6 +116,8 @@ export class ForumAdapterService {
       is_deleted: data.is_deleted,
       created_at: data.created_at,
       updated_at: data.updated_at,
+      parent_message: data.parent_message !== undefined ? this.toForumMessageApi(data.parent_message) : undefined,
+      user: data.user !== undefined ? this.toForumUserApi(data.user) : undefined,
     };
   }
 
@@ -148,5 +154,26 @@ export class ForumAdapterService {
 
   toForumChannelMemberApiList(data: ForumChannelMemberUi[]): ForumChannelMemberApi[] {
     return data.map((d) => this.toForumChannelMemberApi(d));
+  }
+
+  // Adapter for ForumChannelMessages
+  toForumChannelMessagesUi(data: ForumChannelMessagesApi): ForumChannelMessagesUi {
+    return {
+      channel: this.toForumChannelUi(data.channel),
+      messages: this.toForumMessageUiList(data.messages),
+      page: data.page,
+      limit: data.limit,
+      total: data.total,
+    }
+  }
+
+  toForumChannelMessagesApi(data: ForumChannelMessagesUi): ForumChannelMessagesApi {
+    return {
+      channel: this.toForumChannelApi(data.channel),
+      messages: this.toForumMessageApiList(data.messages),
+      page: data.page,
+      limit: data.limit,
+      total: data.total,
+    }
   }
 }

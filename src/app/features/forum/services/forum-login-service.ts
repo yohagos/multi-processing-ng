@@ -12,7 +12,7 @@ export class ForumLoginService {
   private httpClient = inject(HttpClient)
   private forumAdapter = inject(ForumAdapterService)
 
-  private forumUser = signal<ForumUserUi | null>(null)
+  forumUser = signal<ForumUserUi | null>(null)
 
   loginToForum(
     email: string,
@@ -22,14 +22,22 @@ export class ForumLoginService {
       tap(user => {
         const uiUser = this.forumAdapter.toForumUserUi(user)
         localStorage.setItem('forum_user', JSON.stringify(uiUser))
+        //console.log(uiUser)
+        //this.forumUser.set(uiUser)
         //sessionStorage.setItem('forum_user', JSON.stringify(uiUser))
       })
     )
   }
 
+  setLoggedInUser(user: ForumUserUi) {
+    this.forumUser.set(user)
+  }
+
   getCurrentForumUser(): ForumUserUi | null {
     const userData = localStorage.getItem('forum_user')
-    if (userData) return JSON.parse(userData)
+    if (userData) {
+      return JSON.parse(userData)
+    }
     return null
   }
 
