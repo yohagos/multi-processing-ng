@@ -41,7 +41,10 @@ export class ForumLogin {
     if (email !== "" && username !== "") {
         this.loading.set(true)
         this.forumLoginService.loginToForum(email!, username!).subscribe({
-          next: () => this.loading.set(false)
+          next: (result) => {
+            this.forumLoginService.setLoggedInUser(result)
+            this.loading.set(false)
+          }
         })
         this.dialogRef.close()
         this.router.navigate(['forum/public'])
