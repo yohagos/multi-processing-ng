@@ -1,11 +1,17 @@
+<div class="message-field">
+  <div class="scrollable-message-field">
+    @if (loggedInUser()) {
 
-<div class="scrollable-message-field">
-  @if (loggedInUser()) {
-
-  }
-  @for (item of publicMessages()?.messages; track $index) {
-      <app-messages [message]="item"></app-messages>
     }
+    @for (item of publicMessages()?.messages; track $index) {
+        <app-messages
+          [message]="item"
+          [isSelectedAsParent]="selectedParentMessageId === item.id"
+          (selectedAsParent)="markMessageAsParent($event)"
+        ></app-messages>
+      }
+  </div>
 </div>
+
 
 <app-text-editor></app-text-editor>

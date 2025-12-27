@@ -1,10 +1,12 @@
-.scrollable-message-field {
+.message-field {
   border: 2px solid #2050e160;
   min-height: 25em;
+  max-height: 30em;
   width: 98.5%;
+  margin: auto;
+}
+
+.scrollable-message-field {
   display: flex;
   flex-direction: column;
-  _justify-content: center;
-  _margin: auto;
-
 }
