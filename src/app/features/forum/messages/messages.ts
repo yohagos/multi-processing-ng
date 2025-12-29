@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { ForumMessageUi } from '../models/forum.models';
 import { FormatDateService } from '../../../shared/services/format-date-service';
 import { ForumService } from '../services/forum-service';
@@ -35,5 +35,11 @@ export class Messages {
 
   markMessageAsParent() {
     this.selectedAsParent.emit(this.message)
+    console.log('mark as parent')
+  }
+
+  deleteMessage() {
+    console.log(this.message.id)
+    this.forumService.deleteMessageById(this.message!.id, this.currentUserID)
   }
 }

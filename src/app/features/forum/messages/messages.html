@@ -1,7 +1,23 @@
 @if (message) {
   <div class="card {{compareCurrentUser()}} ">
+    @if (message.parent_message) {
+      <div class="parent-card">
+        <div class="parent-top">
+          {{message.parent_message.user?.username}}
+        </div>
+        <div class="parent-content">
+          {{message.parent_message.content}}
+        </div>
+      </div>
+    }
     <div class="card-top">
       <span class="title title-start"> {{message.user?.username}} </span>
+      <button matIconButton
+          class="title-end"
+          (click)="deleteMessage()"
+          >
+          <mat-icon>delete</mat-icon>
+      </button>
       <button matIconButton
           class="title-end check-button"
           [class.selected]="isSelectedAsParent"
