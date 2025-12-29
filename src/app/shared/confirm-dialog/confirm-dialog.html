@@ -1,0 +1,8 @@
+<h2 matDialogTitle>Confirm Actions</h2>
+<mat-dialog-content class="content">
+  {{ contextData.context }}
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton class="add-btn" (click)="confirm()">Continue</button>
+  <button matButton class="cancel-btn" (click)="decline()">Decline</button>
+</mat-dialog-actions>
