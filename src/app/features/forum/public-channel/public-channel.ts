@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { ForumService } from '../services/forum-service';
 import { TextEditor } from '../text-editor/text-editor';
 import { Messages } from '../messages/messages';
@@ -15,7 +15,10 @@ import { ForumMessageUi } from '../models/forum.models';
   templateUrl: './public-channel.html',
   styleUrl: './public-channel.scss',
 })
-export class PublicChannel {
+export class PublicChannel implements AfterViewChecked {
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef
+  shouldScrollToBottom = true
+
   private forumService = inject(ForumService)
   private forumLoginService = inject(ForumLoginService)
   publicMessages = this.forumService.messagesPublicChannel
@@ -28,6 +31,20 @@ export class PublicChannel {
     this.forumService.loadPublicChannelMessages()
   }
 
+  ngAfterViewChecked(): void {
+    if (this.shouldScrollToBottom) {
+      this.scrollToBottom()
+    }
+  }
+
+  scrollToBottom() {
+    try {
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   markMessageAsParent(message: ForumMessageUi) {
     if (this.selectedParentMessageId === message.id) {
       this.selectedParentMessageId = null
@@ -36,5 +53,9 @@ export class PublicChannel {
       this.selectedParentMessageId = message.id || null
       this.forumService.markMessageAsParent(message)
     }
+  }
+
+  deleteMessage(msg_id: string) {
+
   }
 }

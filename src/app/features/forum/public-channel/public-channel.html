@@ -1,12 +1,12 @@
-<div class="message-field">
+<div #scrollContainer class="message-field" (ngAfterViewChecked)="scrollToBottom()">
   <div class="scrollable-message-field">
     @if (loggedInUser()) {
 
     }
-    @for (item of publicMessages()?.messages; track $index) {
+    @for (msg of publicMessages()?.messages; track msg.id; let i = $index) {
         <app-messages
-          [message]="item"
-          [isSelectedAsParent]="selectedParentMessageId === item.id"
+          [message]="msg"
+          [isSelectedAsParent]="selectedParentMessageId === msg.id"
           (selectedAsParent)="markMessageAsParent($event)"
         ></app-messages>
       }
