@@ -60,6 +60,10 @@
   color: #555555;
   font-weight: bolder;
   font-style: italic;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .content {

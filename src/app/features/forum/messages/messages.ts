@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
-import { ForumMessageUi } from '../models/forum.models';
+import { ForumMessageUi, ForumUserUi } from '../models/forum.models';
 import { FormatDateService } from '../../../shared/services/format-date-service';
 import { ForumService } from '../services/forum-service';
 import { ForumLoginService } from '../services/forum-login-service';
@@ -27,6 +27,8 @@ export class Messages {
   @Input() isSelectedAsParent = false
   @Output() selectedAsParent = new EventEmitter<ForumMessageUi>()
 
+  @Output() directChannel = new EventEmitter<ForumUserUi>()
+
   markedMessageColor = '#2525ef77'
 
   compareCurrentUser(): string {
@@ -35,11 +37,14 @@ export class Messages {
 
   markMessageAsParent() {
     this.selectedAsParent.emit(this.message)
-    console.log('mark as parent')
+  }
+
+  openDirectChannelToUser() {
+    if (!this.message.user) return
+    this.directChannel.emit(this.message.user)
   }
 
   deleteMessage() {
-    console.log(this.message.id)
     this.forumService.deleteMessageById(this.message!.id, this.currentUserID)
   }
 }

@@ -11,7 +11,7 @@
       </div>
     }
     <div class="card-top">
-      <span class="title title-start"> {{message.user?.username}} </span>
+      <span class="title title-start" (click)="openDirectChannelToUser()"> {{message.user?.username}} </span>
       <button matIconButton
           class="title-end"
           (click)="deleteMessage()"
