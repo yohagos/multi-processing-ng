@@ -1,7 +1,23 @@
-<mat-toolbar class="forum-toolbar">
-  @if (isUserLoggedIn()) {
-    <button matButton (click)="clearStorage()" >
-      Logout
+<mat-drawer-container class="fdrawer" autosize>
+  <mat-drawer #fDrawer mode="side" closed>
+    <div class="forum-navs">
+      @for (item of []; track $index) {}
+    </div>
+  </mat-drawer>
+
+  <mat-toolbar class="forum-toolbar">
+    <button matIconButton (click)="fDrawer.toggle()">
+      <mat-icon>menu</mat-icon>
     </button>
-  }
-</mat-toolbar>
+    @if (isUserLoggedIn()) {
+      <button matButton (click)="clearStorage()" >
+        Logout
+      </button>
+    }
+  </mat-toolbar>
+  <div class="forum-outlet">
+    <router-outlet></router-outlet>
+  </div>
+</mat-drawer-container>
+
+
