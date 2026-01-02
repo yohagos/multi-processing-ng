@@ -7,8 +7,18 @@
   color: rgba($color: #6060609a, $alpha: 0.6);
 }
 
-.mat-mdc-icon-button:hover {
+/* .mat-mdc-icon-button:hover {
   color: rgba($color: #0040af, $alpha: 0.7);
+} */
+
+.info-icon:hover {
+  color: rgba($color: #0020af, $alpha: 0.7);
 }
 
+.edit-icon:hover {
+  color: rgba($color: #01a34a, $alpha: 0.7);
+}
 
+.delete-icon:hover {
+  color: rgba($color: #af1400, $alpha: 0.7);
+}

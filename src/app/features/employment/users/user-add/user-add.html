@@ -3,26 +3,26 @@
     <form [formGroup]="userForm">
       <ng-template matStepLabel>Fill out User info</ng-template>
       <mat-form-field>
-        <mat-label>First Name</mat-label>
-        <input matInput formControlName="first_name">
+        <mat-label for="firstName">First Name</mat-label>
+        <input matInput formControlName="first_name" name="firstName"/>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Last Name</mat-label>
-        <input matInput formControlName="last_name">
+        <mat-label for="lastName">Last Name</mat-label>
+        <input matInput formControlName="last_name" name="lastName"/>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Phone</mat-label>
-        <input matInput formControlName="phone">
+        <mat-label for="phone">Phone</mat-label>
+        <input matInput formControlName="phone" name="phone"/>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Date of Birth</mat-label>
-        <input matInput [matDatepicker]="dobPicker" formControlName="date_of_birth">
+        <mat-label for="dob">Date of Birth</mat-label>
+        <input matInput [matDatepicker]="dobPicker" formControlName="date_of_birth" name="dob"/>
         <mat-datepicker #dobPicker/>
         <mat-datepicker-toggle [for]="dobPicker" matSuffix/>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Hire Date</mat-label>
-        <input matInput [matDatepicker]="hirePicker" formControlName="hire_date">
+        <mat-label for="hireDate">Hire Date</mat-label>
+        <input matInput [matDatepicker]="hirePicker" formControlName="hire_date" name="hireDate"/>
         <mat-datepicker #hirePicker/>
         <mat-datepicker-toggle [for]="hirePicker" matSuffix/>
       </mat-form-field>
@@ -37,20 +37,20 @@
   <mat-step [stepControl]="addressForm" label="FIll out User address">
     <form [formGroup]="addressForm">
       <mat-form-field>
-        <mat-label>Street</mat-label>
-        <input matInput formControlName="street">
+        <mat-label for="street">Street</mat-label>
+        <input matInput formControlName="street" name="street"/>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>City</mat-label>
-        <input matInput formControlName="city">
+        <mat-label for="city">City</mat-label>
+        <input matInput formControlName="city" name="city"/>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Zip Code</mat-label>
-        <input matInput formControlName="zip_code">
+        <mat-label for="zipCode">Zip Code</mat-label>
+        <input matInput formControlName="zip_code" name="zipCode"/>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Country</mat-label>
-        <input matInput formControlName="country">
+        <mat-label for="country">Country</mat-label>
+        <input matInput formControlName="country" name="country"/>
       </mat-form-field>
     </form>
     <div>
@@ -66,16 +66,16 @@
   <mat-step [stepControl]="departmentForm" label="Select Department">
     <form [formGroup]="departmentForm">
       <mat-form-field>
-        <mat-label>Select Department</mat-label>
-        <mat-select formControlName="id" (selectionChange)="onDepartmentChange($event.value)">
+        <mat-label for="selectDepartment">Select Department</mat-label>
+        <mat-select formControlName="id" (selectionChange)="onDepartmentChange($event.value)"  name="selectDepartment">
           @for (item of (availableDepartments()).data; track $index) {
             <mat-option [value]="item.id"> {{item.name}} </mat-option>
           }
         </mat-select>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Description</mat-label>
-        <input matInput formControlName="description">
+        <mat-label for="deptDescription">Description</mat-label>
+        <input matInput formControlName="description" name="deptDescription"/>
       </mat-form-field>
     </form>
     <div>
@@ -91,8 +91,8 @@
   <mat-step [stepControl]="positionForm" label="Select Position">
     <form [formGroup]="positionForm">
       <mat-form-field>
-        <mat-label>Select Position</mat-label>
-        <mat-select formControlName="id" (selectionChange)="onPositionChange($event.value)">
+        <mat-label for="selectPosition">Select Position</mat-label>
+        <mat-select formControlName="id" (selectionChange)="onPositionChange($event.value)"  name="selectPosition">
           @for (item of (availablePositions()).data; track $index) {
             <mat-option [value]="item.id"> {{item.title}} </mat-option>
           }
