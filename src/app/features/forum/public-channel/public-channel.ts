@@ -4,7 +4,7 @@ import { TextEditor } from '../text-editor/text-editor';
 import { Messages } from '../messages/messages';
 import { ForumLoginService } from '../services/forum-login-service';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { ForumMessageUi } from '../models/forum.models';
+import { ForumMessageUi, ForumUserUi } from '../models/forum.models';
 
 @Component({
   selector: 'app-public-channel',
@@ -55,7 +55,12 @@ export class PublicChannel implements AfterViewChecked {
     }
   }
 
-  deleteMessage(msg_id: string) {
+  undoMarkMessageAsParent(message: ForumMessageUi) {
+    this.forumService.markMessageAsParent(undefined)
+  }
 
+  selectDirectChannel(user: ForumUserUi) {
+    console.log("Selected User => ", user)
+    this.forumService.getOrCreateUserChannel(user.id)
   }
 }

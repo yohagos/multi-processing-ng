@@ -1,9 +1,10 @@
 .message-field {
-  border: 2px solid #2050e160;
+  _border: 2px solid #2050e160;
   min-height: 25em;
   max-height: 30em;
   width: 98.5%;
   margin: auto;
+  margin-top: 0.5em;
   overflow: auto;
   scroll-behavior: smooth;
 }
