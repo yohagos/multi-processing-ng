@@ -5,12 +5,16 @@ import { ForumService } from '../services/forum-service';
 import { ForumLoginService } from '../services/forum-login-service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { AbbreviateTextsPipe } from '../../../core/pipes/abbreviate-texts-pipe';
+import { AbbreviationEnum } from '../../../core/enums/abbreviation';
 
 @Component({
   selector: 'app-messages',
   imports: [
     MatButtonModule,
     MatIconModule,
+
+    AbbreviateTextsPipe,
   ],
   templateUrl: './messages.html',
   styleUrl: './messages.scss',
