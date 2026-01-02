@@ -1,3 +1,18 @@
+@if (parentMessage()) {
+  <div class="parent-container">
+    <div class="parent-top">
+      <div class="parent-user">
+        {{ recognizeParentUser()}}
+      </div>
+    </div>
+    <div class="parent-center">
+      <div class="parent-content">
+        {{ parentMessage()!.content  | abbreviateTextsPipe: 'SHORT' }}
+      </div>
+    </div>
+  </div>
+}
+
 <div class="container">
   <textarea
     matInput

@@ -1,3 +1,37 @@
+.parent-container {
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 0.5em;
+
+
+  border: 2px solid rgba($color: #0040f0, $alpha: 0.4);
+  border-bottom: 0px solid transparent;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0px 2px 2px 1px #0040f045;
+  background: linear-gradient(to bottom, rgba(0, 60, 150, 0.2), transparent);
+
+  .parent-top {
+    margin: 0.5em 2em;
+    margin-top: 0.9em;
+
+    .parent-user {
+      color: gray;
+      font-weight: 500;
+      font-style: italic;
+    }
+  }
+
+  .parent-center {
+    margin: 0.5em 4em;
+
+    .parent-content {
+      color: gray;
+      font-weight: 400;
+    }
+  }
+}
+
 .container {
   display: flex;
   flex-direction: row;
