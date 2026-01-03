@@ -60,7 +60,6 @@ export class PublicChannel implements AfterViewChecked {
   }
 
   selectDirectChannel(user: ForumUserUi) {
-    console.log("Selected User => ", user)
     this.forumService.getOrCreateUserChannel(user.id)
   }
 }
