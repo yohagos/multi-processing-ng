@@ -1,7 +1,13 @@
-<mat-drawer-container class="fdrawer" autosize>
-  <mat-drawer #fDrawer mode="side" closed>
+<mat-drawer-container class="fdrawer">
+  <mat-drawer #fDrawer mode="side" opened>
     <div class="forum-navs">
-      @for (item of []; track $index) {}
+      <div class="btn-container">
+        @for (item of forumRoutes; track $index) {
+          <button matButton class="channel-btn" (click)="navigateToChannel(item.path)">
+            {{ item.name | namesFormatter}}
+          </button>
+        }
+      </div>
     </div>
   </mat-drawer>
 

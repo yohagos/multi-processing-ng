@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
@@ -8,6 +8,9 @@ import { Router, RouterOutlet } from '@angular/router';
 import { ForumService } from '../services/forum-service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ForumLogin } from '../forum-login/forum-login';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { Subject, takeUntil } from 'rxjs';
+import { NamesFormatterPipe } from '../../../core/pipes/names-formatter-pipe';
 
 interface ForumRoutes {
   path: string
@@ -24,11 +27,12 @@ interface ForumRoutes {
     MatToolbarModule,
 
     RouterOutlet,
+    NamesFormatterPipe,
   ],
   templateUrl: './forum-toolbar.html',
   styleUrl: './forum-toolbar.scss',
 })
-export class ForumToolbar implements OnInit {
+export class ForumToolbar implements OnInit, OnDestroy {
   private forumLoginService = inject(ForumLoginService)
   private forumService = inject(ForumService)
   private router = inject(Router)
@@ -38,10 +42,14 @@ export class ForumToolbar implements OnInit {
 
   forumRoutes: ForumRoutes[] = [
     {
-      path: 'forum',
+      path: 'public',
       name: 'Public Channel',
     },
   ]
+
+  destroy$ = new Subject<void>()
+
+  userChannels = this.forumService.userChannels
 
   constructor() {
     const userData = this.forumLoginService.getCurrentForumUser()
@@ -49,6 +57,18 @@ export class ForumToolbar implements OnInit {
       this.openLoginDialog()
     }
     this.router.navigate(['forum/public'])
+
+    toObservable(this.userChannels)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((channels) => {
+        if (!channels) return
+        channels.map(ch => {
+          this.forumRoutes.push({
+            name: ch.name,
+            path: ch.id || ''
+          })
+        })
+      })
   }
 
   ngOnInit(): void {
@@ -66,9 +86,19 @@ export class ForumToolbar implements OnInit {
     return this.forumLoginService.getCurrentForumUser() !== null
   }
 
+  navigateToChannel(path: string) {
+    if (path !== 'public') this.forumService.loadChannelMessagesByID(path)
+    this.router.navigate([`forum/${path}`])
+  }
+
   clearStorage() {
     this.forumLoginService.logoutForumUser()
     this.router.navigate([''])
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 
   /*
