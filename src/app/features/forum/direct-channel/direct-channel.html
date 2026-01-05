@@ -5,9 +5,11 @@
         <app-messages
           [message]="msg"
           [isSelectedAsParent]="selectedParentMessageId === msg.id"
+          (selectedAsParent)="markMessageAsParent($event)"
         ></app-messages>
       }
     }
   </div>
-
 </div>
+
+<app-text-editor [channelPath]="channelId" (clearMarkAsParent)="undoMarkMessageAsParent()"></app-text-editor>
