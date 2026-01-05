@@ -22,9 +22,6 @@ export class ForumLoginService {
       tap(user => {
         const uiUser = this.forumAdapter.toForumUserUi(user)
         localStorage.setItem('forum_user', JSON.stringify(uiUser))
-        //console.log(uiUser)
-        //this.forumUser.set(uiUser)
-        //sessionStorage.setItem('forum_user', JSON.stringify(uiUser))
       })
     )
   }
