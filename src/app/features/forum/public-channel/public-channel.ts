@@ -55,7 +55,7 @@ export class PublicChannel implements AfterViewChecked {
     }
   }
 
-  undoMarkMessageAsParent(message: ForumMessageUi) {
+  undoMarkMessageAsParent() {
     this.forumService.markMessageAsParent(undefined)
   }
 
