@@ -1,0 +1,34 @@
+@if (parentMessage()) {
+  <div class="parent-container">
+    <div class="parent-top">
+      <div class="parent-user">
+        {{ recognizeParentUser()}}
+      </div>
+    </div>
+    <div class="parent-center">
+      <div class="parent-content">
+        {{ parentMessage()!.content  | abbreviateTextsPipe: 'SHORT' }}
+      </div>
+    </div>
+  </div>
+}
+
+<div class="container">
+  <textarea
+    matInput
+    [formControl]="message"
+    class="textfield"
+    placeholder="Enter message"
+    [rows]="7"
+    [cols]="20"
+    >
+  </textarea>
+  <div class="btns">
+    <button matIconButton [disabled]="!message.value" (click)="sendMessage()">
+      <mat-icon>send</mat-icon>
+    </button>
+    <button matIconButton>
+      <mat-icon>sentiment_satisfied</mat-icon>
+    </button>
+  </div>
+</div>

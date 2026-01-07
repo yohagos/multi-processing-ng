@@ -1,0 +1,39 @@
+.fDrawer, .mat-drawer-container {
+  min-height: 93vh !important;
+}
+
+.forum-toolbar {
+  width: 100%;
+  background-color: rgba($color: #2525e8a1, $alpha: 0.44);
+}
+
+.forum-navs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: rgba($color: #1515fa88, $alpha: 0.3);
+  height: 100%;
+}
+
+.mat-drawer {
+  border-top-right-radius: 0px !important;
+  max-width: 25%;
+}
+
+.mat-drawer-side {
+  border-right-style: none;
+}
+
+.btn-container {
+  margin: 0.8em;
+}
+
+.channel-btn {
+  color: rgba($color: #000000, $alpha: 0.7);
+  font-size: larger;
+
+  &:hover {
+    background-color: rgba($color: #eeeeee, $alpha: 0.55);
+  }
+}

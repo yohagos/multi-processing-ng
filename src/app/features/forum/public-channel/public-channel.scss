@@ -1,0 +1,15 @@
+.message-field {
+  min-height: 43em;
+  max-height: 43.5em;
+  width: 98.5%;
+
+  margin: auto;
+  margin-top: 0.5em;
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.scrollable-message-field {
+  display: flex;
+  flex-direction: column;
+}

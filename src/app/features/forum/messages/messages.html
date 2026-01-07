@@ -1,0 +1,41 @@
+@if (message) {
+  <div class="card {{compareCurrentUser()}} ">
+    @if (message.parent_message) {
+      <div class="parent-card">
+        <div class="parent-top">
+          {{message.parent_message.user?.username}}
+        </div>
+        <div class="parent-content">
+          {{ (message.parent_message.content | abbreviateTextsPipe: 'SHORT') }}
+        </div>
+      </div>
+    }
+    <div class="card-top">
+      <span class="title title-start" (click)="openDirectChannelToUser()"> {{message.user?.username}} </span>
+      @if (message.user_id === currentUserID) {
+        <button matIconButton
+          class="title-end"
+          (click)="deleteMessage()"
+          >
+          <mat-icon>delete</mat-icon>
+      </button>
+      }
+      <button matIconButton
+          class="title-end check-button"
+          [class.selected]="isSelectedAsParent"
+          (click)="markMessageAsParent()">
+        <mat-icon>check</mat-icon>
+      </button>
+    </div>
+
+    <div class="card-middle">
+      <div class="content"> {{message.content}} </div>
+    </div>
+
+    @if (message.updated_at) {
+      <div class="card-bottom">
+        <span class="action"> {{formatDateService.formatRelative(message!.updated_at.toString())}} </span>
+      </div>
+    }
+  </div>
+}

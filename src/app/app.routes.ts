@@ -16,6 +16,10 @@ export const routes: Routes = [
     component: Crypto
   },
   {
+    path: "forum",
+    loadChildren: () => import("./features/forum/forum.routes").then(mod => mod.routes),
+  },
+  {
     path: "**",
     redirectTo: "",
     pathMatch: "full"

@@ -1,0 +1,29 @@
+<mat-drawer-container class="fdrawer">
+  <mat-drawer #fDrawer mode="side" opened>
+    <div class="forum-navs">
+      <div class="btn-container">
+        @for (item of forumRoutes; track $index) {
+          <button matButton class="channel-btn" (click)="navigateToChannel(item.path)">
+            {{ item.name | namesFormatter}}
+          </button>
+        }
+      </div>
+    </div>
+  </mat-drawer>
+
+  <mat-toolbar class="forum-toolbar">
+    <button matIconButton (click)="fDrawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    @if (isUserLoggedIn()) {
+      <button matButton (click)="clearStorage()" >
+        Logout
+      </button>
+    }
+  </mat-toolbar>
+  <div class="forum-outlet">
+    <router-outlet></router-outlet>
+  </div>
+</mat-drawer-container>
+
+
