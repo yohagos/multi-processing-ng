@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,6 +25,7 @@ import { ForumMessageUi } from '../models/forum.models';
   styleUrl: './text-editor.scss',
 })
 export class TextEditor implements OnInit {
+  @Input() channelPath: string | undefined
   private forumService = inject(ForumService)
   private forumLoginService = inject(ForumLoginService)
 
@@ -43,7 +44,11 @@ export class TextEditor implements OnInit {
   sendMessage() {
     if (!this.message.valid || this.message.value === null) return
 
-    this.forumService.sendMessage(this.message.value)
+    if (this.channelPath && this.channelPath !== 'public') {
+      this.forumService.sendMessageByChannelID(this.channelPath, this.message.value)
+    } else {
+      this.forumService.sendPublicMessage(this.message.value)
+    }
     if (this.parentMessage()) {
       this.clearMarkAsParent.emit(this.parentMessage())
     }

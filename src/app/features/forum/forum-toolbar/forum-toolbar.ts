@@ -67,6 +67,7 @@ export class ForumToolbar implements OnInit, OnDestroy {
             name: ch.name,
             path: ch.id || ''
           })
+          console.log(this.forumRoutes)
         })
       })
   }
@@ -94,6 +95,7 @@ export class ForumToolbar implements OnInit, OnDestroy {
   clearStorage() {
     this.forumLoginService.logoutForumUser()
     this.router.navigate([''])
+    this.forumRoutes.filter(r => r.path === 'public')
   }
 
   ngOnDestroy(): void {
