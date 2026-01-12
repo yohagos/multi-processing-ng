@@ -9,12 +9,17 @@ export const routes: Routes = [
     path: "",
     component: ForumToolbar,
     children: [
-      {
+      /* {
         path: "public",
         component: PublicChannel,
       },
       {
         path: ':id',
+        component: DirectChannel,
+      },
+      */
+      {
+        path: 'channels',
         component: DirectChannel,
       },
     ]

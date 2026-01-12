@@ -56,7 +56,8 @@ export class ForumToolbar implements OnInit, OnDestroy {
     if (!userData) {
       this.openLoginDialog()
     }
-    this.router.navigate(['forum/public'])
+    // this.router.navigate(['forum/public'])
+    this.router.navigate(['forum/channels'])
 
     toObservable(this.userChannels)
       .pipe(takeUntil(this.destroy$))
